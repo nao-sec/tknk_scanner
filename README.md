@@ -15,7 +15,8 @@ The original code of a malware must be scanned using YARA rules after processing
 ## Requirements
 * python 3.5 or later
 * yara-python 3.7.0
-* Web Server (e.g. xxxx)
+* qemu-kvm
+* nginx
 
 ## Installation
 
