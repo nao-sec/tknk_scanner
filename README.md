@@ -55,6 +55,7 @@ npm install
 npm run generate
 cd ../
 sudo cp -f tknk-scanner.nginx.conf /etc/nginx/sites-available/default
+sudo cp -rf dist/* /usr/share/nginx/html/
 sudo systemctl restart nginx
 ```
 
