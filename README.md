@@ -55,7 +55,7 @@ npm install
 npm run generate
 cd ../
 sudo cp -f tknk-scanner.nginx.conf /etc/nginx/sites-available/defalt
-sudo systemctl nginx restart
+sudo systemctl restart nginx
 ```
 
 ## Usage
