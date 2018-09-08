@@ -54,7 +54,7 @@ cd frontend/
 npm install
 npm run generate
 cd ../
-sudo cp -f tknk-scanner.nginx.conf /etc/nginx/sites-available/defalt
+sudo cp -f tknk-scanner.nginx.conf /etc/nginx/sites-available/default
 sudo systemctl restart nginx
 ```
 
