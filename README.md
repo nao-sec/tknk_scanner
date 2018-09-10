@@ -53,13 +53,16 @@ $ sudo python3 setup.py install
 cd frontend/
 npm install
 npm run generate
+sudo cp -rf dist/* /usr/share/nginx/html/
 cd ../
 sudo cp -f tknk-scanner.nginx.conf /etc/nginx/sites-available/default
-sudo cp -rf dist/* /usr/share/nginx/html/
 sudo systemctl restart nginx
 ```
 
 ## Usage
+Run `./manager.py`.
+Access to `http://localhost:80`
+
 ![tknk01](https://user-images.githubusercontent.com/18203311/45243627-9043d700-b32f-11e8-8b4d-62eed195b26c.PNG)
 * File upload  
 Upload the file to be scanned.
