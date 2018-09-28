@@ -23,21 +23,14 @@ The original code of a malware must be scanned using YARA rules after processing
 ### Preparing the Host
 1. git clone *repository_url*
 2. Run `setup/setup.sh`
-3. Install yara-python
-  ```
-$ git clone --recursive https://github.com/VirusTotal/yara-python
-$ cd yara-python
-$ python3 setup.py build
-$ sudo python3 setup.py install
-```
-4. Edit tknk.conf
+3. Edit tknk.conf
     * vm_name
     * vm_url
-5. Download Tools and copy to `tools/`
+4. Download Tools and copy to `tools/`
     * [hollows_hunter](https://github.com/hasherezade/hollows_hunter)
     * [PsSuspend](https://docs.microsoft.com/en-us/sysinternals/downloads/pssuspend)
     * [ProcDump](https://docs.microsoft.com/en-us/sysinternals/downloads/procdump)
-6. Set yara rules  
+5. Set yara rules  
   Save yara rules in "rules" folder. You need to add the rule to index.yar.
 
 ### Preparing the Guest
