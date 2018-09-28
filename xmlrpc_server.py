@@ -23,6 +23,8 @@ def dump():
     with open('config.json', 'r') as outfile:
         config = json.load(outfile)
 
+    subprocess.call(['cmd.exe', "/c", "start", "pythonw", "mouse_emu.pyw"])
+
     if config["mode"] == "diff":
         Psapi = ctypes.WinDLL('Psapi.dll')
         EnumProcesses = Psapi.EnumProcesses
@@ -36,7 +38,7 @@ def dump():
         src_set = set(ProcessIds)
 
     subprocess.call(['cmd.exe', "/c", "start", config['target_file']])
-    subprocess.call(['cmd.exe', "/c", "start", 'mouse_emu.exe'])
+    
 
     print(("wait for unpack %d seconds\n") % config["time"])
         

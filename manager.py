@@ -41,24 +41,6 @@ def start_analyze():
     with open('config.json', 'w') as outfile:
         json.dump(json_data, outfile)
 
-    cmd=[("virsh snapshot-revert " + VM_NAME + " --current")]
-
-    p = (subprocess.Popen(cmd, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True))
-    output = p.stderr.read().decode('utf-8')
-    print(output)
-
-    if "busy" in output:
-        state={"state":0}
-        with open("state.json", 'w') as f:
-            json.dump(state, f)
-        return make_response(jsonify(status_code=2, message="failed to initialize KVM: Device or resource busy"), 500)
-        
-    elif "Domain" in output:
-        state={"state":0}
-        with open("state.json", 'w') as f:
-            json.dump(state, f)
-        return make_response(jsonify(status_code=2, message="Domain snapshot not found: the domain does not have a current snapshot"), 500)
-
     cmd = [("./xmlrpc_client.py "+ uid)]
     subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
 
@@ -87,7 +69,6 @@ def file_upload():
 
 @app.route('/results/<uuid>')
 def show_result(uuid=None):
-    print(uuid)
 
     result = list(collection.find({u"UUID":uuid}))[0]
     result.pop('_id')
@@ -97,7 +78,22 @@ def show_result(uuid=None):
     else:
         return make_response(jsonify(status_code=1, message='Analysing.'), 206)
         
-    
+@app.route('/yara/<rule_name>')
+def get_yara_file(rule_name=None):
+
+    rule_name_check = rule_name.replace("_", "")
+    if rule_name_check.isalnum() == False:
+        return make_response(jsonify(status_code=2, message="Invalid rule_name"), 400)
+ 
+    cmd=[("find yara/ -type f | xargs grep -l -x -E -e " + "\"rule "+ rule_name +" .*{\" -e \"rule "+ rule_name +"{\" -e \"rule " + rule_name + "\"")]
+    print(cmd)
+    p = (subprocess.Popen(cmd, shell=True, stdin=None, stdout=subprocess.PIPE, close_fds=True))
+    output = p.stdout.read().decode('utf-8')
+
+    with open(output.strip(), 'r') as f:
+        yara_file=f.read()
+
+    return jsonify(status_code=0, result=yara_file)
 
 @app.errorhandler(404)
 def not_found(error):

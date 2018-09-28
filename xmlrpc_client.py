@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import xmlrpc.client
-import os, sys, shutil, json, subprocess, time, yara, glob, hashlib, datetime, requests
+import os, sys, shutil, json, subprocess, time, yara, hashlib, datetime, requests
+from pathlib import Path
 from pymongo import MongoClient
-from pprint import pprint
 
 with open("tknk.conf", 'r') as f:
     tknk_conf = json.load(f)
@@ -12,10 +12,7 @@ VM_NAME=tknk_conf['vm_name']
 VM_URL=tknk_conf['vm_url']
 
 def change_state():
-    with open("state.json", 'r') as f:
-        state = json.load(f)
-
-    state['state'] = 0
+    state={"state":0}
 
     with open("state.json", 'w') as f:
         json.dump(state, f)
@@ -54,18 +51,6 @@ def vm_down():
 
 if __name__ == '__main__':
     args = sys.argv
-    c=0
-
-    while(1):
-        vm_state = subprocess.check_output(["virsh", "domstate", VM_NAME])
-        time.sleep(1)
-        c+=1
-        #print (vm_state.decode('utf-8'))
-        if "running" in str(vm_state.decode('utf-8')):
-            break
-        if c == 60:
-            change_state()
-            exit()
 
     #db connect
     client = MongoClient('localhost', 27017)
@@ -96,10 +81,42 @@ if __name__ == '__main__':
 
     result['scans'].append({"sha256":file_sha256, "detect_rule":list(map(str,matches)), "file_name":config['target_file']})
 
-    os.mkdir("result/" + str(now.strftime("%Y-%m-%d_%H:%M:%S")))
+    cmd=[("virsh snapshot-revert " + VM_NAME + " --current")]
+    p = (subprocess.Popen(cmd, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True))
+    output = p.stderr.read().decode('utf-8')
+    print(output)
+
+    if "busy" in output:
+        print("failed to initialize KVM: Device or resource busy")
+        result["result"]["is_success"] = False
+        result["result"]["detail"] = "failed to initialize KVM: Device or resource busy"
+        change_state()  
+        collection.update({u'UUID':uid},result)
+        exit()
+        
+    elif "Domain" in output:
+        print("Domain snapshot not found: the domain does not have a current snapshot")
+        result["result"]["is_success"] = False
+        result["result"]["detail"] = "Domain snapshot not found: the domain does not have a current snapshot"
+        change_state()  
+        collection.update({u'UUID':uid},result)
+        exit()
+
+    c=0
+
+    while(1):
+        vm_state = subprocess.check_output(["virsh", "domstate", VM_NAME])
+        time.sleep(1)
+        c+=1
+        #print (vm_state.decode('utf-8'))
+        if "running" in str(vm_state.decode('utf-8')):
+            break
+        if c == 60:
+            change_state()
+            exit()
 
     upload("config.json")
-    tools = ["tools/hollows_hunter.exe", "tools/pe-sieve.dll", "tools/procdump.exe", "tools/pssuspend.exe", "tools/mouse_emu.exe"]
+    tools = ["tools/hollows_hunter.exe", "tools/pe-sieve.dll", "tools/procdump.exe", "tools/pssuspend.exe", "tools/mouse_emu.pyw"]
 
     for tool_name in tools:
         upload(tool_name)
@@ -107,24 +124,24 @@ if __name__ == '__main__':
     upload("target/" + config['target_file'])
 
     ret = dump()
-    print("ret===============================")
-    pprint(ret)
 
     if ret == False:
         print("Connection error\n")
-        is_success == False
+        is_success = False
         result["result"]["detail"] = "Connection error"  
     else:
         ret = download() 
      
         if ret == True:
-            shutil.move("dump.zip", "result/")
             print("dump finish")
             is_success = True
 
         else:
             is_success = False
-            result["result"]["detail"] = "dump file does not exist"  
+            if result["mode"] == "procdump":
+                result["result"]["detail"] = "Process does not exist" 
+            else:
+                result["result"]["detail"] = "Dump file does not exist"  
 
     vm_down()
 
@@ -134,8 +151,8 @@ if __name__ == '__main__':
                 result["result"]["is_success"] = True
                 result["result"]["detail"] = "Detected with yara rule!"  
                 break
-
-        with open("result/"+ str(now.strftime("%Y-%m-%d_%H:%M:%S")) + "/" +file_sha256+'.json', 'w') as outfile:
+        os.mkdir("result/" + str(uid))
+        with open("result/"+ str(uid) + "/" +file_sha256+'.json', 'w') as outfile:
                 json.dump(result, outfile, indent=4)
 
         print (json.dumps(result, indent=4))
@@ -145,15 +162,23 @@ if __name__ == '__main__':
         exit()
 
     elif is_success == True:
+        p = Path("result/dump.zip")
+        if p.exists():
+            p.unlink()
+            print("remove")
+        shutil.move("dump.zip", "result/")
         subprocess.run(['unzip', "dump.zip"], cwd="result")   
 
-    files = glob.glob("result/dump/**", recursive=True)
+        p = Path("result/dump/")
 
-    for f in files:
-        if "exe" in f.rsplit(".", 1) or "dll" in f.rsplit(".", 1) or "dmp" in f.rsplit(".", 1):
-	        sha256_hash = str(hashlib.sha256(open(f,'rb').read()).hexdigest())
-	        matches = rules.match(f)
-	        result['scans'].append({"sha256":sha256_hash, "detect_rule":list(map(str,matches)), "file_name":f.rsplit("/", 1)[1]})
+        for f in p.glob("**/*"):
+            print(f.suffix)
+            print(f.resolve())
+            print(f.name)
+            if (".exe" == f.suffix) or (".dll" == f.suffix) or (".dmp" == f.suffix):
+	            sha256_hash = str(hashlib.sha256(open(str(f.resolve()),'rb').read()).hexdigest())
+	            matches = rules.match(str(f.resolve()))
+	            result['scans'].append({"sha256":sha256_hash, "detect_rule":list(map(str,matches)), "file_name":f.name})
 
     for scan in result["scans"]:
         if scan["detect_rule"] != []:
@@ -166,7 +191,7 @@ if __name__ == '__main__':
     with open("result/dump/"+file_sha256+'.json', 'w') as outfile:
         json.dump(result, outfile, indent=4)
 
-    os.rename("result/dump/", "result/"+str(now.strftime("%Y-%m-%d_%H:%M:%S")))
+    os.rename("result/dump/", "result/"+str(uid))
     os.remove("result/dump.zip")
     os.remove("config.json")
 
