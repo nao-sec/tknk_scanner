@@ -15,7 +15,8 @@ The original code of a malware must be scanned using YARA rules after processing
     * Users can submit malware and check scan results using the Web-UI.
 
 ## Requirements
-* Ubuntu 18.04 (Recommend)
+* Ubuntu 18.04 (Host OS)
+* Windows10 (Guest OS)
 * python 3.5 or later
 * yara-python 3.7.0
 * qemu-kvm
@@ -69,7 +70,7 @@ $ git submodule update
 2. Turn off `Windows Defender` and `Windows SmartScreen`
 3. Install Python 3.6
 4. Set to the IP address described in `vm_url`.
-5. Copy and run `xmlrpc_server.py`
+5. Copy and run `xmlrpc_server.py` (Recommend run script as Administrator)
 6. Make snapshot
 
 ### Setting Web-UI
