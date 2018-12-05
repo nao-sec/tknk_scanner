@@ -1,0 +1,3 @@
+[submodule "avclass"]
+	path = avclass
+	url = https://github.com/malicialab/avclass.git
