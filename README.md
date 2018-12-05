@@ -28,14 +28,7 @@ The original code of a malware must be scanned using YARA rules after processing
 ### Preparing the Host
 1. git clone --recursive *repository_url*
 2. `sudo setup/setup.sh`
-3. Install yara-python
- ```
-$ git clone --recursive https://github.com/VirusTotal/yara-python
-$ cd yara-python
-$ python3 setup.py build
-$ sudo python3 setup.py install
-```
-4. Edit tknk.conf
+3. Edit tknk.conf
   * vm_name  
     * Virtual Machine name  
   * vm_url
@@ -45,7 +38,7 @@ $ sudo python3 setup.py install
     * If VT use, set to 1  
   * vt_key
     * Your VT API KEY  
-5. Download Malware characterization tools
+4. Download Malware characterization tools
  * avclass
  ```
 $ git submodule update
@@ -54,11 +47,11 @@ $ git submodule update
    * Download zip from https://ntinfo.biz/  
    * Extract zip to`tknk_scanner`
    * Rename folder name `die`
-6. Download and copy dump tools to `tools/`
+5. Download and copy dump tools to `tools/`
     * [hollows_hunter](https://github.com/hasherezade/hollows_hunter)
     * [ProcDump](https://docs.microsoft.com/en-us/sysinternals/downloads/procdump)
     * [Scylla dll](https://github.com/NtQuery/Scylla)
-7. Set yara rules  
+6. Set yara rules  
   Save yara rules in "rules" folder. You need to add the rule to index.yar.
 
 ### Preparing the Guest
@@ -71,13 +64,13 @@ $ git submodule update
 
 ### Setting Web-UI
 ```
-$ cd fronten$ d/
-$ npm insta$ ll
+$ cd frontend/
+$ npm install
 $ npm run generate
 $ mkdir /usr/share/nginx/tknk/
 $ sudo cp -rf dist/* /usr/share/nginx/tknk/
-$ cd .$ ./
-$ sudo$  cp -f tknk-scanner.nginx.conf /etc/nginx/sites-available/default
+$ cd ../
+$ sudo cp -f tknk-scanner.nginx.conf /etc/nginx/sites-available/default
 $ sudo systemctl restart nginx
 ```
 ### Run
