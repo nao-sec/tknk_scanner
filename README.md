@@ -45,7 +45,7 @@ $ git submodule update
  ```
  * Detect It Easy
    * Download zip from https://ntinfo.biz/  
-   * Extract zip to`tknk_scanner`
+   * Extract zip(Linux Ubuntu 64-bit(x64)) to`tknk_scanner/`
    * Rename folder name `die`
 5. Download and copy dump tools to `tools/`
     * [hollows_hunter](https://github.com/hasherezade/hollows_hunter)
