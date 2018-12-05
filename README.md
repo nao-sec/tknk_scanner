@@ -64,13 +64,13 @@ $ git submodule update
 
 ### Setting Web-UI
 ```
-$ cd fronten$ d/
-$ npm insta$ ll
+$ cd frontend/
+$ npm install
 $ npm run generate
 $ mkdir /usr/share/nginx/tknk/
 $ sudo cp -rf dist/* /usr/share/nginx/tknk/
-$ cd .$ ./
-$ sudo$  cp -f tknk-scanner.nginx.conf /etc/nginx/sites-available/default
+$ cd ../
+$ sudo cp -f tknk-scanner.nginx.conf /etc/nginx/sites-available/default
 $ sudo systemctl restart nginx
 ```
 ### Run
