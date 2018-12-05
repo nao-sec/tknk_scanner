@@ -5,3 +5,4 @@ redis==2.10.6
 rq==0.12.0
 yara-python==3.8.1
 pefile==2018.8.8
+rq==0.12.0

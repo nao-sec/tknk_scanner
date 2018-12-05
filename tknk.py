@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from rq import Queue
-import json, subprocess, requests, time, shutil, magic, os, uuid, math, redis, datetime, plyara, re, sys
+import json, subprocess, requests, time, shutil, magic, os, uuid, math, redis, datetime, re, sys
 from pathlib import Path
 from pymongo import MongoClient
 from flask import Flask, jsonify, request, url_for, abort, Response, make_response, send_file, abort
