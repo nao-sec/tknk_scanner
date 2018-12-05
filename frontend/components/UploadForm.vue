@@ -17,14 +17,13 @@
         <b-form-input id="timeInput" type="number" v-model="form.time" placeholder="seconds" required />
       </b-form-group>
       <b-button type="submit" :variant="get_variant" v-bind:disabled="!can_upload">
-       <template v-if="is_uploading">
-         Uploading...
-       </template>
+        <template v-if="is_uploading">
+          Uploading...
+        </template>
         <template v-else>
           Upload
         </template>
       </b-button>
-
     </b-form>
   </div>
 </template>
@@ -40,9 +39,10 @@
           time: 120
         },
         scan_mode: [
-          {value: 'hollows_hunter', text: 'hollows_hunter - Using hollows_hunter'},
-          {value: 'procdump', text: 'procdump - Using procdump dump'},
-          {value: 'diff', text: "diff - Dump the newly created process while running with procdump"}
+          {value: 'hollows_hunter', text: 'hollows_hunter'},
+          {value: 'procdump', text: 'procdump'},
+          {value: 'diff', text: "diff"},
+          {value: 'scylla', text: "scylla"}
         ],
         error_message: null,
         is_uploading: false,

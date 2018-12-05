@@ -34,14 +34,19 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-    }
+    },
+    vendor: ['vue-clipboard2']
   },
   modules: [
     '@nuxtjs/axios',
     'bootstrap-vue/nuxt',
+    '@nuxtjs/proxy',
+  ],
+  plugins: [
+    '~/plugins/vue-clipboard2'
   ],
   axios: {
-    baseURL: "/api"
+    baseURL: "/api",
   },
   proxy: {
     '/api/': {
@@ -52,10 +57,10 @@ module.exports = {
     }
   },
   css: [
-   '@fortawesome/fontawesome-free-webfonts',
-   '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css',
-   '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css',
-   '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css',
+    '@fortawesome/fontawesome-free-webfonts',
+    '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css',
+    '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css',
+    '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css',
   ]
 };
 
