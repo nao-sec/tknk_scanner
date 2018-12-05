@@ -49,8 +49,18 @@ $ git submodule update
    * Rename folder name `die`
 5. Download and copy dump tools to `tools/`
     * [hollows_hunter](https://github.com/hasherezade/hollows_hunter)
+    ```
+    hollows_hunter.exe
+    pe-sieve.dll
+    ```
     * [ProcDump](https://docs.microsoft.com/en-us/sysinternals/downloads/procdump)
+    ```
+    procdump.exe
+    ```
     * [Scylla dll](https://github.com/NtQuery/Scylla)
+    ```
+    Scylla.dll
+    ```
 6. Set yara rules  
   Save yara rules in "rules" folder. You need to add the rule to index.yar.
 
