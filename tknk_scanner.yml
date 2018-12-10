@@ -1,0 +1,405 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger Petstore
+paths:
+  /analyze:
+    post:
+      tags:
+        - analyze
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/conf"
+      responses:
+        '200':
+          description: "OK response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/result_response"
+        '404':
+          description: "something wrong"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /upload:
+    post:
+      tags:
+        - upload
+      requestBody:
+        content:
+          application/exe:
+            schema:
+              type: string
+              format: binary
+              example: 
+      responses:
+        '200':
+          description: "OK response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/upload_response"
+        '404':
+          description: "something wrong"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /download/{UUID}:
+    get:
+      tags:
+        - download
+      parameters:
+        - name: UUID
+          in: path
+          description: MongoDB's UUID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK response"
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+                example:
+        '404':
+          description: "something wrong"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /results/{UUID}:  
+    get:
+      tags:
+        - results
+      parameters:
+        - name: UUID
+          in: path
+          description: MongoDB's UUID
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description:
+            Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/result_response"
+        404:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error" 
+
+  /jobs:
+    get:
+      tags:
+        - jobs
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/jobs"
+        '404':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /page/{page_num}:
+    get:
+      tags:
+        - results
+      parameters:
+        - name: page_num
+          in: path
+          required: true
+          description: The nuber of page
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/page"
+        '404':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /yara/{rule_name}:
+    get:
+      tags:
+        - yara
+      parameters:
+        - name: rule_name
+          in: path
+          required: true
+          description: detect rule name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/yara"
+        '404':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '400':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /search/{type}/{value}:
+    get:
+      tags:
+        - results
+      parameters:
+        - name: type
+          in: path
+          required: true
+          description: md5 or sha1 or sha256
+          schema:
+            type: string
+        - name: value
+          in: path
+          required: true
+          description: hash value
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/search_results"
+        '404':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"  
+components:
+  schemas:
+    conf:
+      required:
+        - path
+        - mode
+        - time
+      properties:
+        path:
+          type: string
+          example: "target/gandcrab.exe"
+        mode:
+          type: string
+          example: "hollows_hunter"
+        time:
+          type: integer
+          format: int32
+          example: 20
+    upload_response:
+      properties:
+        status_code:
+          type: integer
+          format: int32
+          example: 0
+        path:
+          type: string
+          example: "target/hoge.exe"
+    result_response:
+      type: object
+      required:
+        - status_code
+        - result
+      properties:
+        status_code:
+          type: integer
+          format: int32
+          example: 0
+        report:
+          $ref: "#/components/schemas/report"  
+    report:
+      properties:
+        mode:
+          type: string
+          example: "hollows_hunter"
+        timestamp:
+          type: string
+          example: "2018-11-23T20:42:23.749302"
+        run_time:
+          type: integer
+          format: int32
+          example: 20
+        scans:
+          type: array
+          items:
+            $ref: "#/components/schemas/scans"
+        target_scan:
+            $ref: "#/components/schemas/target_scan"
+        status_code:
+          type: integer
+          format: int32
+          example: 0
+        UUID:
+          type: string
+          example: "41ad0e99-f982-4355-abf9-b6a85078efc4"
+        magic:
+          type: string
+          example: "PE32 executable (GUI) Intel 80386, for MS Windows"
+        virus_total:
+          type: boolean
+          format: int32
+          example: 1
+        avclass:
+          $ref: "#/components/schemas/avclass_key"
+        die:
+          type: string
+          example: 
+            - "PE: compiler: MASM32(8-11)[-]"
+            - "PE: linker: Microsoft Linker(12.0)[EXE32]"
+    avclass_key:
+      type: object
+      properties:
+        flag:
+          type: integer
+          format: int32
+          example: 1
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/data"
+    data:
+      properties:
+        family_name:
+          type: string
+          example: "nymaim"
+        count:
+          type: integer
+          format: int32
+          example: 2
+    target_scan:
+      properties:
+        md5:
+          type: string    
+          example: "b45cea3d89ee2f7087e6a6180d10b494"
+        sha1:
+          type: string
+          example: "ba74895fbf97bb6d88e2ed2df0853c21b6a93a33"
+        sha256:
+          type: string
+          example: "27c064b345343c9d3152164b8ea0f777e71ce9c4bd7b79ae39fd716533dd8b49"
+        detect_rule:
+          type: array
+          items:
+            type: string
+            example: "nymaim"
+        file_name:
+          type: string
+          example: "TempuzL51.exe"
+    scans:
+      properties:
+        detect_rule:
+          type: array
+          items:
+            type: string
+            example: "nymaim"
+        file_name:
+          type: string
+          example: "TempuzL51.exe"
+    page:
+      properties:
+        page:
+          type: array
+          items:
+            $ref: "#/components/schemas/report"
+        page_size:
+          type: integer
+          format: int32
+          example: 1
+    search_results:
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/report"
+    jobs:
+      properties:
+        current_job:
+          $ref: "#/components/schemas/current_job"
+        queued_jobs:
+          type: array
+          items:
+            $ref: "#/components/schemas/queued_jobs"     
+    current_job:
+      properties:
+        config:
+            $ref: "#/components/schemas/job_conf"  
+        id:
+          type: string
+          example: "de9e01a2-7603-4098-8503-e82742a4b2c1"
+    queued_jobs:
+      properties:
+        config:
+          $ref: "#/components/schemas/job_conf"
+        id:
+          type: string
+          example: "f5f5f39d-6421-4824-b724-e532704b1d83"
+    job_conf:
+      properties:
+        target_file:
+          type: string
+          example: "netwire1"
+        mode:
+          type: string
+          example: "hollows_hunter"
+        time:
+          type: integer
+          format: int32
+          example: 20
+        timestamp:
+          type: integer
+          format: int32
+          example: 1542780044
+    yara:
+      properties:
+        status_code:
+          type: integer
+          format: int32
+          example: 0
+        rule:
+          type: string
+          example: "rule Emotet\n{\n    meta:\n        author = \"kevoreilly\"\n        description = \"Emotet Payload\"\n        cape_type = \"Emotet Payload\"\n    strings:\n        $snippet1 = {FF 15 ?? ?? ?? ?? 83 C4 0C 68 40 00 00 F0 6A 18}\n        $snippet2 = {6A 13 68 01 00 01 00 FF 15 ?? ?? ?? ?? 85 C0}\n        $snippet3 = {83 3D ?? ?? ?? ?? 00 C7 05 ?? ?? ?? ?? ?? ?? ?? ?? C7 05 ?? ?? ?? ?? ?? ?? ?? ?? 74 0A 51 E8 ?? ?? ?? ?? 83 C4 04 C3 33 C0 C3}\n        $snippet4 = {33 C0 C7 05 ?? ?? ?? ?? ?? ?? ?? ?? C7 05 ?? ?? ?? ?? ?? ?? ?? ?? A3 ?? ?? ?? ?? A3 ?? ?? ?? ?? A3 ?? ?? ?? ?? 39 05 ?? ?? ?? ?? 74 1D 8D 49 00 40 A3 ?? ?? ?? ?? 83 3C C5 ?? ?? ?? ?? 00 75 F0 51 E8 ?? ?? ?? ?? 83 C4 04 C3}\n    condition:\n        //check for MZ Signature at offset 0\n        uint16(0) == 0x5A4D and (($snippet1) and ($snippet2)) or ($snippet3) or ($snippet4)\n}\n"
+    Error:
+      required:
+        - status_code
+        - message
+      properties:
+        status_code:
+          type: integer
+          format: int32
+          example: 2
+        message:
+          type: string
