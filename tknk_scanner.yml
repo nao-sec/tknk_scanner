@@ -1,7 +1,7 @@
 openapi: "3.0.0"
 info:
   version: 1.0.0
-  title: Swagger Petstore
+  title: tknk_scanner API
 paths:
   /analyze:
     post:
@@ -18,7 +18,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/result_response"
+                $ref: "#/components/schemas/analyze_response"
         '404':
           description: "something wrong"
           content:
@@ -319,6 +319,9 @@ components:
         file_name:
           type: string
           example: "TempuzL51.exe"
+        size:
+          type: string
+          example: "86.0KB"
     scans:
       properties:
         detect_rule:
@@ -329,6 +332,9 @@ components:
         file_name:
           type: string
           example: "TempuzL51.exe"
+        size:
+          type: string
+          example: "4.1KB"
     page:
       properties:
         page:
@@ -392,6 +398,18 @@ components:
         rule:
           type: string
           example: "rule Emotet\n{\n    meta:\n        author = \"kevoreilly\"\n        description = \"Emotet Payload\"\n        cape_type = \"Emotet Payload\"\n    strings:\n        $snippet1 = {FF 15 ?? ?? ?? ?? 83 C4 0C 68 40 00 00 F0 6A 18}\n        $snippet2 = {6A 13 68 01 00 01 00 FF 15 ?? ?? ?? ?? 85 C0}\n        $snippet3 = {83 3D ?? ?? ?? ?? 00 C7 05 ?? ?? ?? ?? ?? ?? ?? ?? C7 05 ?? ?? ?? ?? ?? ?? ?? ?? 74 0A 51 E8 ?? ?? ?? ?? 83 C4 04 C3 33 C0 C3}\n        $snippet4 = {33 C0 C7 05 ?? ?? ?? ?? ?? ?? ?? ?? C7 05 ?? ?? ?? ?? ?? ?? ?? ?? A3 ?? ?? ?? ?? A3 ?? ?? ?? ?? A3 ?? ?? ?? ?? 39 05 ?? ?? ?? ?? 74 1D 8D 49 00 40 A3 ?? ?? ?? ?? 83 3C C5 ?? ?? ?? ?? 00 75 F0 51 E8 ?? ?? ?? ?? 83 C4 04 C3}\n    condition:\n        //check for MZ Signature at offset 0\n        uint16(0) == 0x5A4D and (($snippet1) and ($snippet2)) or ($snippet3) or ($snippet4)\n}\n"
+    analyze_response:
+      properties:
+        UUID:
+          type: string
+          example: "41ad0e99-f982-4355-abf9-b6a85078efc4"
+        message:
+          type: string
+          example: "Submission Success!"
+        status_code:
+            type: integer
+            format: int32
+            example: 0
     Error:
       required:
         - status_code
