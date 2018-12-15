@@ -2,6 +2,8 @@ openapi: "3.0.0"
 info:
   version: 1.0.0
   title: tknk_scanner API
+servers:
+  - url: http://0.0.0.0/api
 paths:
   /analyze:
     post:
