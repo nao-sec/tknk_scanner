@@ -50,7 +50,7 @@ def current_job_init(r):
     queued_job_ids = q.job_ids # Gets a list of job IDs from the queue
 
     if len(queued_job_ids) == 0:
-        r.set('current_job_id', None)
+        r.set('current_job_id', "")
 
     return
 
@@ -61,6 +61,33 @@ def size_fmt(num, suffix='B'):
             num /= 1000.0
         return "%.1f%s%s" % (num, 'Yi', suffix)
 
+
+def suricata(output_path, tcpdump_pid):
+    suricata_log=[]
+    subprocess.run(['kill', str(tcpdump_pid)])
+
+    if os.path.getsize("packet_dump.pcap") == 0:
+        os.remove("packet_dump.pcap")
+        return suricata_log
+
+    cmd=["suricata", "-r", "packet_dump.pcap", "-l", "."]
+    p = subprocess.run(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+    if os.path.getsize("eve.json") == 0:
+        os.remove("eve.json")
+        shutil.move("packet_dump.pcap", output_path)
+        return suricata_log
+        
+    with open("eve.json") as f:
+        line = f.readline()
+        while line:
+            print(line)
+            suricata_log.append(json.loads(line))
+            line = f.readline()
+
+    shutil.move("packet_dump.pcap", output_path)
+    os.remove("eve.json")
+    return suricata_log
 
 def analyze(uid):
 
@@ -118,6 +145,9 @@ def analyze(uid):
 
     result['target_scan']=({"md5":file_md5, "sha1":file_sha1, "sha256":file_sha256, "detect_rule":list(map(str,matches)), "file_name":config['target_file'], "size":size_fmt(os.path.getsize(config['path']))})
 
+    if result['target_scan']['detect_rule']!=[]:
+        result["result"]["is_success"] = True
+
     cmd=['virsh', 'snapshot-revert', VM_NAME, '--current']
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output = p.stderr.decode('utf-8')
@@ -125,7 +155,6 @@ def analyze(uid):
 
     if "busy" in output:
         print("failed to initialize KVM: Device or resource busy")
-        result["result"]["is_success"] = False
         result["result"]["detail"] = "failed to initialize KVM: Device or resource busy"
         collection.update({u'UUID':uid},result)
         current_job_init(r)
@@ -133,7 +162,6 @@ def analyze(uid):
         
     elif "Domain" in output:
         print("Domain snapshot not found: the domain does not have a current snapshot")
-        result["result"]["is_success"] = False
         result["result"]["detail"] = "Domain snapshot not found: the domain does not have a current snapshot"
         collection.update({u'UUID':uid},result)
         current_job_init(r)
@@ -165,21 +193,23 @@ def analyze(uid):
 
     upload("target/" + config['target_file'])
 
+    tcpdump_pid = subprocess.Popen(['tcpdump', "-i", "virbr0", "-w", "packet_dump.pcap"]).pid
+
     ret = dump(config)
 
     if ret == False:
         print("Connection error\n")
-        is_success = False
+        dump_success = False
         result["result"]["detail"] = "Connection error"
     else:
         ret = download() 
      
         if ret == True:
             print("dump finish")
-            is_success = True
+            dump_success = True
 
         else:
-            is_success = False
+            dump_success = False
             if result["mode"] == "procdump":
                 result["result"]["detail"] = "Process does not exist" 
             else:
@@ -187,23 +217,27 @@ def analyze(uid):
 
     vm_down()
 
-    if is_success == False:
-        for scan in result["scans"]:
-            if scan["detect_rule"] != []:
-                result["result"]["is_success"] = True
-                result["result"]["detail"] = "Detected with yara rule!"  
-                break
+    if dump_success == False:
+        result['dump_success']=dump_success
         os.mkdir("result/" + str(uid))
         with open("result/"+ str(uid) + "/" +file_sha256+'.json', 'w') as outfile:
                 json.dump(result, outfile, indent=4)
         shutil.copyfile(config['path'], "result/"+str(uid)+"/"+config['target_file'])
 
+        suricata_log=suricata("result/"+str(uid), tcpdump_pid)
+        result['suricata']=suricata_log
+        collection.update({u'UUID':uid},result)
+
         print (json.dumps(result, indent=4))
         collection.update({u'UUID':uid},result)
         current_job_init(r)
+
+        os.remove("dump.zip")
+        
         os._exit(0)
 
-    elif is_success == True:
+    elif dump_success == True:
+        result['dump_success']=dump_success
         p = Path("result/dump.zip")
         if p.exists():
             p.unlink()
@@ -225,18 +259,20 @@ def analyze(uid):
             result["result"]["detail"] = "Detected with yara rule!" 
             break
 
-    print (json.dumps(result, indent=4))
+    shutil.copyfile(config['path'], "result/dump/"+config['target_file'])
+
+    suricata_log=suricata("result/dump/", tcpdump_pid)
+    result['suricata']=suricata_log
 
     with open("result/dump/"+file_sha256+'.json', 'w') as outfile:
         json.dump(result, outfile, indent=4)
 
-    shutil.copyfile(config['path'], "result/dump/"+config['target_file'])
-
-    os.rename("result/dump/", "result/"+str(uid))
-    os.remove("result/dump.zip")
-
+    print (json.dumps(result, indent=4))
     collection.update({u'UUID':uid},result)
     current_job_init(r)
+
+    os.rename("result/dump", "result/"+str(uid))
+    os.remove("result/dump.zip")
 
     return
 

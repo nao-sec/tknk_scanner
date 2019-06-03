@@ -28,6 +28,8 @@
     color #1a88ff
     &:hover
       color #73b6ff
+  .table
+    color white
 </style>
 
 <style lang="stylus" scoped>

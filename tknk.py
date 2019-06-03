@@ -36,7 +36,7 @@ def start_analyze():
     collection.insert_one(post)
 
     print(json.dumps(json_data, indent=4))
-    r.set(uid, json_data)
+    r.set(uid, str(json_data))
 
     job = q.enqueue(analyze, uid, job_id=uid, timeout=json_data['time']+500)
 
@@ -53,7 +53,7 @@ def file_upload():
 
     if ("DLL" in file_type) or (("PE32" or"PE32+") not in file_type):
             print("Invalid File Format!! Only PE Format File(none dll).")
-            return make_response(jsonify(status_code=2, message="Invalid File Format!! Only PE Format File(none dll)."), 400)
+            return make_response(jsonify(status_code=2, message= str(file_type)+ " Invalid File Format!! Only PE Format File."  ), 400)
 
     if (("PE32" or "PE32+") in file_type):
         path = Path("target/"+filename)
@@ -115,7 +115,7 @@ def job_ids():
     q = Queue(connection=Redis())# Getting the number of jobs in the queue
     queued_job_ids = q.job_ids # Gets a list of job IDs from the queue
     queued_jobs=[]
-    if r.get('current_job_id') != b'None':
+    if r.get('current_job_id') != b'':
         current_job_id=r.get('current_job_id')
         config = eval(r.get(current_job_id).decode('utf-8'))
         del config['path']
@@ -176,7 +176,7 @@ if __name__ == '__main__':
 
     pool =  redis.ConnectionPool(host='localhost', port=6379, db=0)
     r = redis.StrictRedis(connection_pool=pool)
-    r.set('current_job_id', None)
+    r.set('current_job_id', "")
    
     with open("index.yar", 'r') as f:
         index = f.readlines()
@@ -202,7 +202,7 @@ if __name__ == '__main__':
             else:
                 pass
     
-    r.set('yara_db', yara_db)
+    r.set('yara_db', str(yara_db))
     print()
 
     # Tell RQ what Redis connection to use
