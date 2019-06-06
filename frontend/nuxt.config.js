@@ -2,9 +2,9 @@ module.exports = {
   /*
   ** Headers of the page
   */
+  mode: 'spa',
   head: {
     title: 'tknk_Scanner',
-    mode: 'spa',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -50,11 +50,15 @@ module.exports = {
   },
   proxy: {
     '/api/': {
-      'target': 'http://localhost:8000/',
-      'pathRewrite': {
-        '^/api': '/'
-      }
+      'target': 'https://tknk.svr.pink',
+      'auth': 'nao_sec:PntdquE1R2H]W@p5'
     }
+    // '/api/': {
+    //   'target': 'http://localhost:8000/',
+    //   'pathRewrite': {
+    //     '^/api': '/'
+    //   }
+    // }
   },
   css: [
     '@fortawesome/fontawesome-free-webfonts',
