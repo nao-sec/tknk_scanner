@@ -2,7 +2,9 @@
   <b-table :items="report.scans" v-if="report.scans.length !== 0" :fields="headers" class="dropped-file-table">
     <template slot="detect_rules" slot-scope="data" class="detect-rules">
       <div class="badges">
-        <yara variant="danger" v-for="(l, k) in data.item.detect_rule" :key="k" :yara="l" v-if="data.item.detect_rule.length !== 0"/>
+        <template v-if="data.item.detect_rule.length !== 0">
+          <yara variant="danger" v-for="(l, k) in data.item.detect_rule" :key="k" :yara="l" />
+        </template>
         <b-badge variant="secondary" v-if="data.item.detect_rule.length === 0">No rule detects</b-badge>
       </div>
     </template>
