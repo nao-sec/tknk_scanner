@@ -147,6 +147,12 @@ def analyze(uid):
 
     if result['target_scan']['detect_rule']!=[]:
         result["result"]["is_success"] = True
+    
+    if "DLL" in result['magic']:
+        result["result"]["detail"] = "In the case of a DLL, only uploaded files is scanned."
+        collection.update({u'UUID':uid},result)
+        current_job_init(r)
+        os._exit(0)
 
     cmd=['virsh', 'snapshot-revert', VM_NAME, '--current']
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

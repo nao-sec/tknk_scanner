@@ -51,7 +51,7 @@ def file_upload():
 
     file_type = magic.from_file("target/"+filename)
 
-    if ("DLL" in file_type) or (("PE32" or"PE32+") not in file_type):
+    if ("PE32" or"PE32+") not in file_type:
             print("Invalid File Format!! Only PE Format File(none dll).")
             return make_response(jsonify(status_code=2, message= str(file_type)+ " Invalid File Format!! Only PE Format File."  ), 400)
 
