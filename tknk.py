@@ -89,7 +89,6 @@ def get_yara_file(rule_name=None):
 
     db = json.loads(r.get("yara_db").decode('utf-8').replace("\'", "\""))    
 
-    print(db[rule_name])
     try:
         with open(db[rule_name], 'r') as f:
             yara_file=f.read()
