@@ -1,11 +1,11 @@
 <template>
   <div class="status">
     <div v-if="status" class="status-success">
-      <i class="fas fa-check-circle fa-10x" />
+      <font-awesome-icon icon="check-circle" size="10x" />
       <h2>Success!</h2>
     </div>
     <div v-else class="status-fail">
-      <i class="fas fa-times-circle fa-10x" />
+      <font-awesome-icon icon="times-circle" size="10x" />
       <h2>Failed</h2>
     </div>
   </div>

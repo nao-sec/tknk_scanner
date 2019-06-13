@@ -1,7 +1,7 @@
 <template>
   <div id="hash">
     <div>
-      <i ref="copyIcon" :class="icon" @click="copy" />
+      <span ref="copyIcon"><font-awesome-icon :icon="icon" @click="copy" /></span>
       <b-tooltip
         :show.sync="does_show_tooltip"
         triggers="click"
@@ -35,9 +35,9 @@ export default {
     },
     icon() {
       if (!this.does_show_tooltip) {
-        return ['fas', 'fa-clipboard']
+        return 'clipboard'
       } else {
-        return ['fas', 'fa-clipboard-check']
+        return 'clipboard-check'
       }
     }
   },
