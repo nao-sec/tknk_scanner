@@ -21,13 +21,12 @@ def start_analyze():
         print(request.headers['Content-Type'])
         return jsonify(status_code=2, message="Content-Type Error.")
 
-    json_data = request.json
-    p = Path(json_data['path'])
-    json_data['target_file']=p.name
-    json_data['timestamp'] = int(time.mktime(datetime.datetime.now().timetuple()))
+    requet_data = request.json
+    p = Path(requet_data['path'])
+    requet_data['target_file']=p.name
 
     path = "target/"
-    if os.path.exists(path+json_data['target_file']) != True:
+    if os.path.exists(path+requet_data['target_file']) != True:
         return abort(404)
 
     uid = str(uuid.uuid4())
@@ -35,10 +34,9 @@ def start_analyze():
 
     collection.insert_one(post)
 
-    print(json.dumps(json_data, indent=4))
-    r.set(uid, str(json_data))
+    r.set(uid, str(requet_data))
 
-    job = q.enqueue(analyze, uid, job_id=uid, timeout=json_data['time']+500)
+    job = q.enqueue(analyze, uid, job_id=uid, timeout=requet_data['time']+500)
 
     return jsonify(status_code=0, UUID=uid, message="Submission Success!")
 
