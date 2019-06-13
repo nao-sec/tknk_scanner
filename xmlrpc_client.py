@@ -113,7 +113,7 @@ def analyze(uid):
     result = {"result":{"detail":"", "is_success":False},
               "run_time":str(config['time']), 
               "mode":config['mode'],
-              "timestamp":str(datetime.datetime.today().isoformat()),
+              "timestamp":str(datetime.datetime.utcnow().isoformat()),
               "scans":[],
               "UUID":uid,
               "magic":magic.from_file(config['path']),
@@ -219,7 +219,7 @@ def analyze(uid):
             if result["mode"] == "procdump":
                 result["result"]["detail"] = "Process does not exist" 
             else:
-                result["result"]["detail"] = "Dump file does not exist"  
+                result["result"]["detail"] = "Dump file does not exist" 
 
     vm_down()
 
