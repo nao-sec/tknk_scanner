@@ -6,39 +6,37 @@
       </template>
     </b-table>
   </div>
-  <div class="empty" v-else>
+  <div v-else class="empty">
     <p>Empty :)</p>
   </div>
 </template>
 
 <script>
-  import JobStatus from '~/components/jobs/JobStatus'
+import JobStatus from '~/components/jobs/JobStatus'
 
-  export default {
-    name: "List",
-    props: [
-      'jobs'
-    ],
-    components: {
-      JobStatus
-    },
-    computed: {
-      items() {
-        return this.jobs.map(o => {
-          return {
-            "File Name": o.config.target_file,
-            "Mode": o.config.mode,
-            "Running Time": o.config.time,
-            "Status": o.id
-          }
-        });
-      }
+export default {
+  name: 'List',
+  components: {
+    JobStatus
+  },
+  props: ['jobs'],
+  computed: {
+    items() {
+      return this.jobs.map((o) => {
+        return {
+          'File Name': o.config.target_file,
+          Mode: o.config.mode,
+          'Running Time': o.config.time,
+          Status: o.id
+        }
+      })
     }
   }
+}
 </script>
 
 <style lang="stylus" scoped>
-  .empty
-    font-style italic
-    padding-left 1em
+.empty
+  font-style italic
+  padding-left 1em
 </style>

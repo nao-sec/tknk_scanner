@@ -22,31 +22,30 @@
 </template>
 
 <script>
-  import List from '~/components/jobs/List'
-  import { mapState } from 'vuex'
+import List from '~/components/jobs/List'
+import { mapState } from 'vuex'
 
-  export default {
-    name: "jobs",
-    components: {
-      List
+export default {
+  name: 'Jobs',
+  components: {
+    List
+  },
+  computed: {
+    current() {
+      if (this.jobs.current === null) {
+        return []
+      } else {
+        return [this.jobs.current]
+      }
     },
-    computed: {
-      current() {
-        if(this.jobs.current === null) {
-          return []
-        } else {
-          return [ this.jobs.current ];
-        }
-      },
-      ... mapState([ 'jobs' ])
-    }
-
+    ...mapState(['jobs'])
   }
+}
 </script>
 
 <style lang="stylus" scoped>
-  .tasks
-    padding-bottom 1em
-  hr
-    background-color white
+.tasks
+  padding-bottom 1em
+hr
+  background-color white
 </style>
