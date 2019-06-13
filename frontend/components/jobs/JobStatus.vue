@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <i :class="status_icon" />
+  <div class="status">
+    <font-awesome-icon :icon="status_icon" :class="status_class" :spin="status === 1" size="xs" />
     <nuxt-link v-if="status === 0" :to="{ name: 'results-resultid', params: { resultid: id } }">
       Results
     </nuxt-link>
@@ -20,19 +20,30 @@ export default {
   },
   computed: {
     status_icon() {
-      const templates = ['fas']
       if (this.status === 1) {
         // processing
-        return templates.concat(['fa-spinner', 'fa-spin'])
+        return 'spinner'
       } else if (this.status === 0 && this.is_success) {
         // done and scanning success
-        return templates.concat(['fa-check-circle', 'success'])
+        return 'check-circle'
       } else if (this.status === 0 && !this.is_success) {
         // done, but fail scanning
-        return templates.concat(['fa-times-circle', 'fail'])
+        return 'times-circle'
       } else {
         // not implemented state
-        return templates.concat(['fa-question-circle', 'unknown'])
+        return 'question-circle'
+      }
+    },
+    status_class() {
+      if (this.status === 0 && this.is_success) {
+        // done and scanning success
+        return ['success']
+      } else if (this.status === 0 && !this.is_success) {
+        // done, but fail scanning
+        return ['fail']
+      } else {
+        // not implemented state
+        return ['unknown']
       }
     }
   },
@@ -65,10 +76,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.success
-.fail
-.unknown
-  padding-right 1em
+.status
+  height 1em
 .success
   color #00ff00
 .fail

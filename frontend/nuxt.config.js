@@ -16,6 +16,9 @@ module.exports = {
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
+  css: [
+    '@fortawesome/fontawesome-svg-core/styles.css'
+  ],
   /*
    ** Customize the progress bar color
    */
@@ -39,24 +42,27 @@ module.exports = {
           }
         })
       }
-    },
-    vendor: ['vue-clipboard2']
+    }
   },
-  modules: ['@nuxtjs/axios', 'bootstrap-vue/nuxt', '@nuxtjs/proxy'],
-  plugins: ['~/plugins/vue-clipboard2'],
+  modules: [
+    '@nuxtjs/axios',
+    'bootstrap-vue/nuxt',
+    '@nuxtjs/proxy'
+  ],
+  plugins: [
+    '~plugins/vue-clipboard2',
+    '~plugins/fontawesome'
+  ],
   axios: {
     baseURL: '/api'
   },
   proxy: {
     '/api/': {
       target: process.env.TKNK_DEVELOP_URL,
-      auth: process.env.TKNK_DEVELOP_AUTH
+      auth: process.env.TKNK_DEVELOP_AUTH,
+      'pathRewrite': {
+        '^/api': '/'
+      }
     }
-  },
-  css: [
-    '@fortawesome/fontawesome-free-webfonts',
-    '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css',
-    '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css',
-    '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css'
-  ]
+  }
 }

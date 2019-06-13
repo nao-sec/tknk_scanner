@@ -12,7 +12,7 @@
       <div class="github">
         <div class="foot-wrapper">
           <a href="https://github.com/nao-sec/tknk_scanner">
-            <i class="fab fa-github fa-3x" />
+            <font-awesome-icon :icon="['fab', 'github']" size="3x" />
             <p>Code on Github</p>
           </a>
         </div>
@@ -20,7 +20,7 @@
       <div class="credit">
         <div class="foot-wrapper">
           <nuxt-link :to="{ name: 'credits' }">
-            <i class="fas fa-copyright fa-3x" />
+            <font-awesome-icon icon="copyright" size="3x" />
             <p>Credits</p>
           </nuxt-link>
         </div>
