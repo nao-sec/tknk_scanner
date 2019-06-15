@@ -18,7 +18,6 @@ app = Flask(__name__)
 @app.route('/analyze', methods=['POST'])
 def start_analyze():
     if 'application/json' not in request.headers['Content-Type']:
-        print(request.headers['Content-Type'])
         return jsonify(status_code=2, message="Content-Type Error.")
 
     requet_data = request.json
@@ -30,7 +29,32 @@ def start_analyze():
         return abort(404)
 
     uid = str(uuid.uuid4())
-    post = {"UUID":uid, "avclass":{"data":[],"flag":None},"die":[],"magic":None,"mode":None,"result":{"detail":None,"is_success":None},"run_time":None,"scans":[], "target_scan":{"file_name":None, "detect_rule":[], "md5":None,"sha1":None,"sha256":None, "size":None}, "timestamp":None, "virus_total":None}
+    post = {
+        "UUID": uid,
+        "avclass": {
+            "data": [],
+            "flag": null
+        },
+        "die": [],
+        "magic": null,
+        "mode": null,
+        "result": {
+            "detail": null,
+            "is_success": null
+        },
+        "run_time": null,
+        "scans": [],
+        "target_scan": {
+            "file_name": null,
+            "detect_rule": [],
+            "md5": null,
+            "sha1": null,
+            "sha256": null,
+            "size": null
+        },
+        "timestamp": null,
+        "virus_total": null
+    }
 
     collection.insert_one(post)
 
@@ -50,7 +74,6 @@ def file_upload():
     file_type = magic.from_file("target/"+filename)
 
     if ("PE32" or"PE32+") not in file_type:
-            print("Invalid File Format!! Only PE Format File(none dll).")
             return make_response(jsonify(status_code=2, message= str(file_type)+ " Invalid File Format!! Only PE Format File."  ), 400)
 
     if (("PE32" or "PE32+") in file_type):
@@ -200,7 +223,6 @@ if __name__ == '__main__':
                 pass
     
     r.set('yara_db', str(yara_db))
-    print()
 
     # Tell RQ what Redis connection to use
     redis_conn = Redis(host='localhost', port=6379)

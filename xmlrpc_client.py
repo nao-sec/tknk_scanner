@@ -20,7 +20,6 @@ def download():
         try:
             handle.write(proxy.download_file().data)
             return True
-
         except xmlrpc.client.Fault:
             print(sys.exc_info())
             return sys.exc_info()
@@ -81,7 +80,6 @@ def suricata(output_path, tcpdump_pid):
     with open("eve.json") as f:
         line = f.readline()
         while line:
-            print(line)
             suricata_log.append(json.loads(line))
             line = f.readline()
 
@@ -273,7 +271,6 @@ def analyze(uid):
     with open("result/dump/"+file_sha256+'.json', 'w') as outfile:
         json.dump(result, outfile, indent=4)
 
-    print (json.dumps(result, indent=4))
     collection.update({u'UUID':uid},result)
     current_job_init(r)
 
