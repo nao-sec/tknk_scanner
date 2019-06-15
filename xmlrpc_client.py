@@ -27,8 +27,8 @@ conf.read('tknk.conf', 'UTF-8')
 
 VM_NAME=conf.get('settings','vm_name')
 VM_URL=conf.get('settings','vm_url')
-VIRUS_TOTAL=conf.getboolean('plugins','virus_total')
-VT_KEY=conf.get('plugins','vt_key')
+AVCLASS=conf.getboolean('avclass','avclass')
+VT_KEY=conf.get('avclass','vt_key')
 
 def download():
     proxy = xmlrpc.client.ServerProxy(VM_URL)
@@ -142,7 +142,7 @@ def analyze(uid):
         file_sha256 = str(hashlib.sha256(d).hexdigest())
 
     #avclass
-    if VIRUS_TOTAL == True:
+    if AVCLASS == True:
         result['virus_total'] = True
         result['avclass'] = run_avclass(VT_KEY, file_sha256)
 

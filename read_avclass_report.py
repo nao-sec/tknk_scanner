@@ -5,13 +5,10 @@ def run_avclass (vt_key, sha256):
     #Download VT report
     params = {'apikey': vt_key, 'resource':sha256}
 
-    headers = {
-      "Accept-Encoding": "gzip, deflate",
-      "User-Agent" : "Retrieving file scan reports"
-      }
-
-    response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', params=params, headers=headers)
-
+    try:
+        response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', params=params)
+    except:
+        return ({"flag":False, "data":"connecion error"})
     json_response = response.json()
     file_name = params['resource']+".json"
 
@@ -20,8 +17,6 @@ def run_avclass (vt_key, sha256):
 
     with open (file_name, 'w') as f:
         json.dump(json_response, f)
-
-    vt_url = "https://www.virustotal.com/#/file/" + sha256 + "/detection"
 
     #run AVClass
     cmd = ["./avclass/avclass_labeler.py", "-vt", file_name, "-v"]
