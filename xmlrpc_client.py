@@ -1,18 +1,34 @@
 #!/usr/bin/env python3
 
 import xmlrpc.client
-import os, sys, shutil, json, subprocess, time, yara, hashlib, datetime, requests, magic, redis, socket, pefile
+import os
+import sys
+import shutil
+import json
+import subprocess
+import time
+import yara
+import hashlib
+import datetime
+import requests
+import magic
+import redis
+import socket
+import pefile
 from pathlib import Path
 from pymongo import MongoClient
 from rq import get_current_job, Queue
 from read_avclass_report import run_avclass
 from redis import Redis
+import configparser
 
-with open("tknk.conf", 'r') as f:
-    tknk_conf = json.load(f)
+conf = configparser.ConfigParser()
+conf.read('tknk.conf', 'UTF-8')
 
-VM_NAME=tknk_conf['vm_name']
-VM_URL=tknk_conf['vm_url']
+VM_NAME=conf.get('settings','vm_name')
+VM_URL=conf.get('settings','vm_url')
+VIRUS_TOTAL=conf.getboolean('plugins','virus_total')
+VT_KEY=conf.get('plugins','vt_key')
 
 def download():
     proxy = xmlrpc.client.ServerProxy(VM_URL)
@@ -126,9 +142,9 @@ def analyze(uid):
         file_sha256 = str(hashlib.sha256(d).hexdigest())
 
     #avclass
-    if tknk_conf['virus_total'] == 1:
-        result['virus_total'] = 1
-        result['avclass'] = run_avclass(tknk_conf['vt_key'], file_sha256)
+    if VIRUS_TOTAL == True:
+        result['virus_total'] = True
+        result['avclass'] = run_avclass(VT_KEY, file_sha256)
 
     #Detect it easy
     cmd=["die/diec.sh", config['path']]

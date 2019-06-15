@@ -1,16 +1,24 @@
 #!/usr/bin/env python3
 from rq import Queue
-import json, subprocess, requests, time, shutil, magic, os, uuid, math, redis, datetime, re, sys
+import json
+import subprocess
+import requests
+import time
+import shutil
+import magic
+import os
+import uuid
+import math
+import redis
+import datetime
+import re
+import sys
 from pathlib import Path
 from pymongo import MongoClient
 from flask import Flask, jsonify, request, url_for, abort, Response, make_response, send_file, abort
 from redis import Redis
 from xmlrpc_client import analyze
 
-with open("tknk.conf", 'r') as f:
-    tknk_conf = json.load(f)
-
-VM_NAME=tknk_conf['vm_name']
 UPLOAD_FOLDER="target/" 
 
 app = Flask(__name__)
@@ -33,27 +41,27 @@ def start_analyze():
         "UUID": uid,
         "avclass": {
             "data": [],
-            "flag": null
+            "flag": None
         },
         "die": [],
-        "magic": null,
-        "mode": null,
+        "magic": None,
+        "mode": None,
         "result": {
-            "detail": null,
-            "is_success": null
+            "detail": None,
+            "is_success": None
         },
-        "run_time": null,
+        "run_time": None,
         "scans": [],
         "target_scan": {
-            "file_name": null,
+            "file_name": None,
             "detect_rule": [],
-            "md5": null,
-            "sha1": null,
-            "sha256": null,
-            "size": null
+            "md5": None,
+            "sha1": None,
+            "sha256": None,
+            "size": None
         },
-        "timestamp": null,
-        "virus_total": null
+        "timestamp": None,
+        "virus_total": None
     }
 
     collection.insert_one(post)
