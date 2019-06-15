@@ -147,7 +147,7 @@ def analyze(uid):
         result['avclass'] = run_avclass(VT_KEY, file_sha256)
 
     #Detect it easy
-    cmd=["die/diec.sh", config['path']]
+    cmd=["die/diec.sh", config['path'], "-deepscan:yes", "-showentropy:yes"]
     p = subprocess.run(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
     result['die'] = p.stdout.decode("utf8").split("\n")
     if result['die'] != []:
