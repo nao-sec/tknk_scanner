@@ -69,14 +69,6 @@ def current_job_init(r):
 
     return
 
-def size_fmt(num, suffix='B'):
-        for unit in ['','K','M','G','T','P','E','Z']:
-            if abs(num) < 1000.0:
-                return "%3.1f%s%s" % (num, unit, suffix)
-            num /= 1000.0
-        return "%.1f%s%s" % (num, 'Yi', suffix)
-
-
 def suricata(output_path, tcpdump_pid):
     suricata_log=[]
     subprocess.run(['kill', str(tcpdump_pid)])
@@ -157,7 +149,7 @@ def analyze(uid):
     rules = yara.compile('index.yar')
     matches = rules.match(config['path'])
 
-    result['target_scan']=({"md5":file_md5, "sha1":file_sha1, "sha256":file_sha256, "detect_rule":list(map(str,matches)), "file_name":config['target_file'], "size":size_fmt(os.path.getsize(config['path']))})
+    result['target_scan']=({"md5":file_md5, "sha1":file_sha1, "sha256":file_sha256, "detect_rule":list(map(str,matches)), "file_name":config['target_file'], "size":os.path.getsize(config['path'])})
 
     if result['target_scan']['detect_rule']!=[]:
         result["result"]["is_success"] = True
@@ -271,7 +263,7 @@ def analyze(uid):
             if (".exe" == f.suffix) or (".dll" == f.suffix) or (".dmp" == f.suffix):
                 size = os.path.getsize(str(f))
                 matches = rules.match(str(f.resolve()))
-                result['scans'].append({"detect_rule":list(map(str,matches)), "file_name":f.name, "size":size_fmt(size)})
+                result['scans'].append({"detect_rule":list(map(str,matches)), "file_name":f.name, "size":size})
 
     for scan in result["scans"]:
         if scan["detect_rule"] != []:
