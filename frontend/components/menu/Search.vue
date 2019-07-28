@@ -8,15 +8,14 @@
       type="text"
       placeholder="MD5, SHA-1 or SHA-256"
     />
-    <b-button
-      size="sm"
-      variant="success"
-      type="submit"
-      class="mr-sm-5"
-    >
+    <b-button size="sm" variant="success" type="submit" class="mr-sm-5">
       Search
     </b-button>
-    <b-tooltip ref="hintingTooltip" :disabled.sync="disabled" :target="() => $refs.inputHash">
+    <b-tooltip
+      ref="hintingTooltip"
+      :disabled.sync="disabled"
+      :target="() => $refs.inputHash"
+    >
       You should input md5, sha1 or sha256 hash ;P
     </b-tooltip>
   </b-nav-form>
@@ -24,19 +23,19 @@
 
 <script>
 export default {
-  name: 'Search',
+  name: "Search",
   data() {
     return {
-      hash: '',
+      hash: "",
       disabled: true
     }
   },
   computed: {
     input_class() {
-      const cssClass = ['mr-sm-2', 'hash']
+      const cssClass = ["mr-sm-2", "hash"]
 
-      if (this.hash !== '') {
-        cssClass.push('input')
+      if (this.hash !== "") {
+        cssClass.push("input")
       }
 
       return cssClass
@@ -44,9 +43,9 @@ export default {
   },
   watch: {
     hash() {
-      if (this.hash === '') {
+      if (this.hash === "") {
         this.disabled = true
-        this.$refs.hintingTooltip.$emit('close')
+        this.$refs.hintingTooltip.$emit("close")
       }
     }
   },
@@ -54,27 +53,27 @@ export default {
     submit(evt) {
       evt.preventDefault()
 
-      let type = ''
+      let type = ""
       if (/[a-f0-9]+/.test(this.hash)) {
         switch (this.hash.length) {
           case 32:
-            type = 'md5'
+            type = "md5"
             break
           case 40:
-            type = 'sha1'
+            type = "sha1"
             break
           case 64:
-            type = 'sha256'
+            type = "sha256"
             break
         }
       }
-      if (type === '') {
-        this.$refs.hintingTooltip.$emit('open')
+      if (type === "") {
+        this.$refs.hintingTooltip.$emit("open")
         return
       }
 
       this.$router.push({
-        name: 'search-type-hash',
+        name: "search-type-hash",
         params: { type: type, hash: this.hash }
       })
     }

@@ -16,14 +16,14 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import Status from '~/components/results/summary/Status'
-import ScanSummary from '~/components/results/summary/ScanSummary'
-import FileSummary from '~/components/results/summary/FileSummary'
-import DetectsSummary from '~/components/results/summary/DetectsSummary'
+import { mapState, mapGetters } from "vuex"
+import Status from "~/components/results/summary/Status"
+import ScanSummary from "~/components/results/summary/ScanSummary"
+import FileSummary from "~/components/results/summary/FileSummary"
+import DetectsSummary from "~/components/results/summary/DetectsSummary"
 
 export default {
-  name: 'Summary',
+  name: "Summary",
   components: {
     Status,
     ScanSummary,
@@ -31,11 +31,11 @@ export default {
     DetectsSummary
   },
   computed: {
-    ...mapState(['report']),
+    ...mapState(["report"]),
     ...mapGetters({
-      file_summary: 'report/file_summary',
-      scan_summary: 'report/scan_summary',
-      detects_summary: 'report/detects_summary'
+      file_summary: "report/file_summary",
+      scan_summary: "report/scan_summary",
+      detects_summary: "report/detects_summary"
     })
   }
 }

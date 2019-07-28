@@ -6,7 +6,12 @@
           {{ error_message }}
         </p>
       </div>
-      <b-btn class="mt-3" variant="outline-danger" block @click="close_error_modal">
+      <b-btn
+        class="mt-3"
+        variant="outline-danger"
+        block
+        @click="close_error_modal"
+      >
         Close
       </b-btn>
     </b-modal>
@@ -61,7 +66,7 @@
 
 <script>
 export default {
-  name: 'UploadForm',
+  name: "UploadForm",
   data() {
     return {
       form: {
@@ -70,10 +75,10 @@ export default {
         time: 120
       },
       scan_mode: [
-        { value: 'hollows_hunter', text: 'hollows_hunter' },
-        { value: 'procdump', text: 'procdump' },
-        { value: 'diff', text: 'diff' },
-        { value: 'scylla', text: 'scylla' }
+        { value: "hollows_hunter", text: "hollows_hunter" },
+        { value: "procdump", text: "procdump" },
+        { value: "diff", text: "diff" },
+        { value: "scylla", text: "scylla" }
       ],
       error_message: null,
       is_uploading: false,
@@ -84,11 +89,13 @@ export default {
     can_upload() {
       return (
         !this.is_uploading &&
-        (this.form.file !== null && this.form.mode !== null && this.form.time !== null)
+        (this.form.file !== null &&
+          this.form.mode !== null &&
+          this.form.time !== null)
       )
     },
     get_variant() {
-      return this.is_uploading ? 'secondary' : 'success'
+      return this.is_uploading ? "secondary" : "success"
     }
   },
   methods: {
@@ -99,24 +106,28 @@ export default {
       e.preventDefault()
 
       const data = new FormData()
-      data.append('file', this.form.file)
+      data.append("file", this.form.file)
 
       const conf = {
         onUploadProgress: () => {
           this.is_uploading = true
         }
       }
-      const res = await this.$axios.$post('/upload', data, conf).catch((e) => {
+      const res = await this.$axios.$post("/upload", data, conf).catch(e => {
         this.form = {
           file: null,
           mode: null,
           time: 120
         }
         this.is_uploading = false
-        if (e.response.data && e.response.data.status_code && e.response.data.status_code !== 0) {
+        if (
+          e.response.data &&
+          e.response.data.status_code &&
+          e.response.data.status_code !== 0
+        ) {
           this.error_message = e.response.data.message
         } else {
-          this.error_message = 'Unknown Upload Error'
+          this.error_message = "Unknown Upload Error"
         }
         this.$refs.errorModal.show()
         this.show = false
@@ -128,7 +139,7 @@ export default {
 
       const analyze = await this.$axios
         .$post(
-          '/analyze',
+          "/analyze",
           {
             path: res.path,
             mode: this.form.mode,
@@ -136,17 +147,21 @@ export default {
           },
           conf
         )
-        .catch((e) => {
+        .catch(e => {
           this.form = {
             file: null,
             mode: null,
             time: 120
           }
           this.is_uploading = false
-          if (e.response.data && e.response.data.status_code && e.response.data.status_code !== 0) {
+          if (
+            e.response.data &&
+            e.response.data.status_code &&
+            e.response.data.status_code !== 0
+          ) {
             this.error_message = e.response.data.message
           } else {
-            this.error_message = 'Unknown Analyze Error'
+            this.error_message = "Unknown Analyze Error"
           }
           this.$refs.errorModal.show()
           this.show = false
@@ -157,7 +172,7 @@ export default {
         })
 
       this.$router.push({
-        name: 'results-resultid',
+        name: "results-resultid",
         params: { resultid: analyze.UUID }
       })
     }

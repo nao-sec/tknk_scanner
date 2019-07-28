@@ -29,7 +29,10 @@
           </b-badge>
         </b-badge>
       </template>
-      <b-badge v-if="avclass.item.AVClass.data.length === 0" variant="secondary">
+      <b-badge
+        v-if="avclass.item.AVClass.data.length === 0"
+        variant="secondary"
+      >
         No AVClass detects
       </b-badge>
     </template>
@@ -37,13 +40,13 @@
 </template>
 
 <script>
-import Yara from '~/components/Yara'
+import Yara from "~/components/Yara"
 export default {
-  name: 'DetectsSummary',
+  name: "DetectsSummary",
   components: {
     Yara
   },
-  props: ['detectsSummary']
+  props: ["detectsSummary"]
 }
 </script>
 

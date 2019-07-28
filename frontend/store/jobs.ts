@@ -18,7 +18,9 @@ export const mutations = {
       (newCurrentJobs !== null &&
         state.current !== null &&
         newCurrentJobs.id === state.current.id)
-    ) { return null }
+    ) {
+      return null
+    }
 
     if (state.current !== null) state.finished.push(state.current)
     state.current = newCurrentJobs

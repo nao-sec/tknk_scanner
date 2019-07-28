@@ -3,7 +3,13 @@
     <b-badge variant="danger" to="#" @click="show_detail">
       {{ yara }}
     </b-badge>
-    <b-modal ref="ruleDetail" class="detail" size="lg" hide-footer :title="yara">
+    <b-modal
+      ref="ruleDetail"
+      class="detail"
+      size="lg"
+      hide-footer
+      :title="yara"
+    >
       <template slot="modal-title" slot-scope="data">
         <span class="title">{{ data.value }}</span>
       </template>
@@ -11,12 +17,7 @@
       <div v-else class="b-block text-center">
         <i class="fas fa-spinner fa-spin fa-5x" />
       </div>
-      <b-btn
-        class="mt-3"
-        variant="outline-danger"
-        block
-        @click="hide_detail"
-      >
+      <b-btn class="mt-3" variant="outline-danger" block @click="hide_detail">
         Close
       </b-btn>
     </b-modal>
@@ -25,8 +26,8 @@
 
 <script>
 export default {
-  name: 'Yara',
-  props: ['yara'],
+  name: "Yara",
+  props: ["yara"],
   data() {
     return {
       rule: null
@@ -43,12 +44,12 @@ export default {
     fetch_rule() {
       this.$axios
         .get(`/yara/${this.yara}`, { progress: false })
-        .then((res) => {
+        .then(res => {
           this.rule = res.data.rule
         })
-        .catch((e) => {
+        .catch(e => {
           console.log(`Fetching rule error: ${e}`)
-          this.rule = 'Rule Not Found'
+          this.rule = "Rule Not Found"
         })
     }
   }

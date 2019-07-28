@@ -34,14 +34,14 @@
 </template>
 
 <script>
-import Message from '~/components/ui/Message'
-import ScanSummary from '~/components/results/summary/scan/Summary'
-import FileSummary from '~/components/results/summary/file/Summary'
-import Files from '~/components/results/files/Files'
-import { mapState } from 'vuex'
+import { mapState } from "vuex"
+import Message from "~/components/ui/Message"
+import ScanSummary from "~/components/results/summary/scan/Summary"
+import FileSummary from "~/components/results/summary/file/Summary"
+import Files from "~/components/results/files/Files"
 
 export default {
-  name: 'ResultIndex',
+  name: "ResultIndex",
   components: {
     ScanSummary,
     FileSummary,
@@ -57,10 +57,12 @@ export default {
     is_processing() {
       return this.report.status_code === 1 || this.report.status_code === null
     },
-    ...mapState(['report'])
+    ...mapState(["report"])
   },
   validate({ params }) {
-    return /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(params.resultid)
+    return /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(
+      params.resultid
+    )
   },
   created() {
     this.fetch_data()
@@ -68,19 +70,19 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.interval)
-    this.$store.commit('report/destoroy')
+    this.$store.commit("report/destoroy")
   },
   methods: {
     async fetch_data() {
       if (this.report.status_code === null || this.report.status_code === 1) {
         const res = await this.$axios
-          .$get('/results/' + this.$route.params.resultid, { progress: false })
-          .catch((e) => {
+          .$get("/results/" + this.$route.params.resultid, { progress: false })
+          .catch(e => {
             clearInterval(this.interval)
             throw this.$root.error(e)
           })
         if (res.status_code !== 1) {
-          this.$store.commit('report/set_result', res)
+          this.$store.commit("report/set_result", res)
         }
       } else {
         clearInterval(this.interval)
