@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       does_show_tooltip: false,
-      has_copy_error: false
+      has_copy_error: false,
     }
   },
   computed: {
@@ -41,7 +41,7 @@ export default {
       } else {
         return "clipboard-check"
       }
-    }
+    },
   },
   methods: {
     copy() {
@@ -57,8 +57,8 @@ export default {
       setTimeout(() => {
         this.does_show_tooltip = false
       }, 1000)
-    }
-  }
+    },
+  },
 }
 </script>
 

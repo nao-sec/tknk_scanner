@@ -41,7 +41,7 @@ export default {
   name: "Summary",
   components: {
     FileSummary,
-    DetectsSummary
+    DetectsSummary,
   },
   computed: {
     ...mapGetters({
@@ -49,9 +49,9 @@ export default {
       detects_summary: "report/detects_summary",
       file_name: "report/file_name",
       is_in_vt: "report/is_in_vt",
-      sha256: "report/sha256"
-    })
-  }
+      sha256: "report/sha256",
+    }),
+  },
 }
 </script>
 

@@ -34,8 +34,8 @@ import UploadForm from "~/components/UploadForm"
 
 export default {
   components: {
-    UploadForm
-  }
+    UploadForm,
+  },
 }
 </script>
 

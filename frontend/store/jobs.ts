@@ -1,7 +1,7 @@
 export const state = () => ({
   current: null,
   finished: [],
-  queued: []
+  queued: [],
 })
 
 export const mutations = {
@@ -24,5 +24,5 @@ export const mutations = {
 
     if (state.current !== null) state.finished.push(state.current)
     state.current = newCurrentJobs
-  }
+  },
 }

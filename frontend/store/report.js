@@ -8,7 +8,7 @@ export const state = () => ({
   status_code: null,
   target_scan: null,
   avclass: null,
-  die: null
+  die: null,
 })
 
 export const getters = {
@@ -27,8 +27,8 @@ export const getters = {
         AVClass: state.avclass,
         "DIE Indicators": state.die,
         detect_rules:
-          state.target_scan === null ? null : state.target_scan.detect_rule
-      }
+          state.target_scan === null ? null : state.target_scan.detect_rule,
+      },
     ]
   },
   scan_summary(state) {
@@ -38,8 +38,8 @@ export const getters = {
         detail: state.result === null ? "" : state.result.detail,
         running_time: state.run_time,
         timestamp: state.timestamp,
-        uuid: state.uuid
-      }
+        uuid: state.uuid,
+      },
     ]
   },
   file_summary(state) {
@@ -51,8 +51,8 @@ export const getters = {
           magic: null,
           md5: null,
           sha1: null,
-          sha256: null
-        }
+          sha256: null,
+        },
       ]
     } else {
       return [
@@ -62,11 +62,11 @@ export const getters = {
           magic: state.magic,
           md5: state.target_scan.md5,
           sha1: state.target_scan.sha1,
-          sha256: state.target_scan.sha256
-        }
+          sha256: state.target_scan.sha256,
+        },
       ]
     }
-  }
+  },
 }
 
 export const mutations = {
@@ -95,5 +95,5 @@ export const mutations = {
     state.avclass = null
     state.die = null
     state.magic = null
-  }
+  },
 }

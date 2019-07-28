@@ -17,7 +17,7 @@ import JobStatus from "~/components/jobs/JobStatus"
 export default {
   name: "List",
   components: {
-    JobStatus
+    JobStatus,
   },
   props: ["jobs"],
   computed: {
@@ -27,11 +27,11 @@ export default {
           "File Name": o.config.target_file,
           Mode: o.config.mode,
           "Running Time": o.config.time,
-          Status: o.id
+          Status: o.id,
         }
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

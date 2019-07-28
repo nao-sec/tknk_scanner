@@ -28,16 +28,16 @@ export default {
     Status,
     ScanSummary,
     FileSummary,
-    DetectsSummary
+    DetectsSummary,
   },
   computed: {
     ...mapState(["report"]),
     ...mapGetters({
       file_summary: "report/file_summary",
       scan_summary: "report/scan_summary",
-      detects_summary: "report/detects_summary"
-    })
-  }
+      detects_summary: "report/detects_summary",
+    }),
+  },
 }
 </script>
 
