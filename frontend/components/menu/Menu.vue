@@ -35,8 +35,8 @@ export default {
   name: "Menu",
   components: {
     Queue,
-    Search
-  }
+    Search,
+  },
 }
 </script>
 

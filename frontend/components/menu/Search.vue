@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       hash: "",
-      disabled: true
+      disabled: true,
     }
   },
   computed: {
@@ -39,7 +39,7 @@ export default {
       }
 
       return cssClass
-    }
+    },
   },
   watch: {
     hash() {
@@ -47,7 +47,7 @@ export default {
         this.disabled = true
         this.$refs.hintingTooltip.$emit("close")
       }
-    }
+    },
   },
   methods: {
     submit(evt) {
@@ -74,10 +74,10 @@ export default {
 
       this.$router.push({
         name: "search-type-hash",
-        params: { type: type, hash: this.hash }
+        params: { type: type, hash: this.hash },
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

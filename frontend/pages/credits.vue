@@ -74,7 +74,7 @@
 
 <script>
 export default {
-  name: "Credits"
+  name: "Credits",
 }
 </script>
 

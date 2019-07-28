@@ -23,7 +23,7 @@ export default {
     return {
       status: null,
       is_success: false,
-      paused: false
+      paused: false,
     }
   },
   computed: {
@@ -53,7 +53,7 @@ export default {
         // not implemented state
         return ["unknown"]
       }
-    }
+    },
   },
   mounted() {
     this.next_tick()
@@ -78,8 +78,8 @@ export default {
       if ((this.status === null || this.status !== 0) && !this.paused) {
         setTimeout(this.next_tick, 9000)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -19,11 +19,11 @@ import ReportsSummary from "~/components/ReportsSummary"
 export default {
   name: "SearchIndex",
   components: {
-    ReportsSummary
+    ReportsSummary,
   },
   data() {
     return {
-      results: []
+      results: [],
     }
   },
   validate({ params }) {
@@ -54,7 +54,7 @@ export default {
       })
 
     this.results = data.results
-  }
+  },
 }
 </script>
 

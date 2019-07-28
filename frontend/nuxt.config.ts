@@ -14,10 +14,10 @@ const config: NuxtConfiguration = {
         hid: "description",
         name: "description",
         content:
-          "tknk_scanner is community-based integrated malware identification system"
-      }
+          "tknk_scanner is community-based integrated malware identification system",
+      },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
   css: ["@fortawesome/fontawesome-svg-core/styles.css"],
   /*
@@ -40,26 +40,23 @@ const config: NuxtConfiguration = {
           loader: "eslint-loader",
           exclude: /(node_modules)/,
           options: {
-            fix: true
-          }
+            fix: true,
+          },
         })
       }
-    }
+    },
   },
   modules: ["@nuxtjs/axios", "bootstrap-vue/nuxt", "@nuxtjs/proxy"],
   plugins: ["~plugins/vue-clipboard2", "~plugins/fontawesome"],
   axios: {
-    baseURL: "/api"
+    baseURL: "/api",
   },
   proxy: {
     "/api/": {
       target: process.env.TKNK_DEVELOP_URL,
       auth: process.env.TKNK_DEVELOP_AUTH,
-      pathRewrite: {
-        "^/api": "/"
-      }
-    }
-  }
+    },
+  },
 }
 
 export default config

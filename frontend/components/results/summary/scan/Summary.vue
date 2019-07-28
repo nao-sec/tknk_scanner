@@ -18,14 +18,14 @@ export default {
   name: "Summary",
   components: {
     Status,
-    ScanSummary
+    ScanSummary,
   },
   computed: {
     ...mapState(["report"]),
     ...mapGetters({
-      scan_summary: "report/scan_summary"
-    })
-  }
+      scan_summary: "report/scan_summary",
+    }),
+  },
 }
 </script>
 
