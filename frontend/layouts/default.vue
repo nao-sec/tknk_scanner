@@ -14,8 +14,8 @@ import Menu from "~/components/menu/Menu.vue"
 export default {
   components: {
     Menu,
-    Page
-  }
+    Page,
+  },
 }
 </script>
 

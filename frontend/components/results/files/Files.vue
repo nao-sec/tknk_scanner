@@ -33,27 +33,27 @@ import Yara from "~/components/Yara"
 export default {
   name: "Files",
   components: {
-    Yara
+    Yara,
   },
   computed: {
     headers() {
       return [
         {
           key: "file_name",
-          label: "File Name"
+          label: "File Name",
         },
         {
           key: "size",
-          label: "Size"
+          label: "Size",
         },
         {
           key: "detect_rules",
-          label: "Detect Rule"
-        }
+          label: "Detect Rule",
+        },
       ]
     },
-    ...mapState(["report"])
-  }
+    ...mapState(["report"]),
+  },
 }
 </script>
 

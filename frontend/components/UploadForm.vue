@@ -72,17 +72,17 @@ export default {
       form: {
         file: null,
         mode: null,
-        time: 120
+        time: 120,
       },
       scan_mode: [
         { value: "hollows_hunter", text: "hollows_hunter" },
         { value: "procdump", text: "procdump" },
         { value: "diff", text: "diff" },
-        { value: "scylla", text: "scylla" }
+        { value: "scylla", text: "scylla" },
       ],
       error_message: null,
       is_uploading: false,
-      show: true
+      show: true,
     }
   },
   computed: {
@@ -96,7 +96,7 @@ export default {
     },
     get_variant() {
       return this.is_uploading ? "secondary" : "success"
-    }
+    },
   },
   methods: {
     close_error_modal() {
@@ -111,13 +111,13 @@ export default {
       const conf = {
         onUploadProgress: () => {
           this.is_uploading = true
-        }
+        },
       }
       const res = await this.$axios.$post("/upload", data, conf).catch(e => {
         this.form = {
           file: null,
           mode: null,
-          time: 120
+          time: 120,
         }
         this.is_uploading = false
         if (
@@ -143,15 +143,15 @@ export default {
           {
             path: res.path,
             mode: this.form.mode,
-            time: parseInt(this.form.time, 10)
+            time: parseInt(this.form.time, 10),
           },
-          conf
+          conf,
         )
         .catch(e => {
           this.form = {
             file: null,
             mode: null,
-            time: 120
+            time: 120,
           }
           this.is_uploading = false
           if (
@@ -173,10 +173,10 @@ export default {
 
       this.$router.push({
         name: "results-resultid",
-        params: { resultid: analyze.UUID }
+        params: { resultid: analyze.UUID },
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

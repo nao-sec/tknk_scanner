@@ -7,7 +7,7 @@
 <script>
 export default {
   name: "Download",
-  props: ["id"]
+  props: ["id"],
 }
 </script>
 

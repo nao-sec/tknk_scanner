@@ -30,7 +30,7 @@ export default {
   props: ["yara"],
   data() {
     return {
-      rule: null
+      rule: null,
     }
   },
   methods: {
@@ -51,8 +51,8 @@ export default {
           console.log(`Fetching rule error: ${e}`)
           this.rule = "Rule Not Found"
         })
-    }
-  }
+    },
+  },
 }
 </script>
 

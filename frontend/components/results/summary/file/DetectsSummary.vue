@@ -44,9 +44,9 @@ import Yara from "~/components/Yara"
 export default {
   name: "DetectsSummary",
   components: {
-    Yara
+    Yara,
   },
-  props: ["detectsSummary"]
+  props: ["detectsSummary"],
 }
 </script>
 

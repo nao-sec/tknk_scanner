@@ -28,7 +28,7 @@ import List from "~/components/jobs/List"
 export default {
   name: "Jobs",
   components: {
-    List
+    List,
   },
   computed: {
     current() {
@@ -38,8 +38,8 @@ export default {
         return [this.jobs.current]
       }
     },
-    ...mapState(["jobs"])
-  }
+    ...mapState(["jobs"]),
+  },
 }
 </script>
 

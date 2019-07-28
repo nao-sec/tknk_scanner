@@ -19,7 +19,7 @@ export default {
   name: "Queue",
   data() {
     return {
-      paused: false
+      paused: false,
     }
   },
   mounted() {
@@ -35,7 +35,7 @@ export default {
     queued_class() {
       return this.jobs.queued.length === 0 ? null : ["working"]
     },
-    ...mapState(["jobs"])
+    ...mapState(["jobs"]),
   },
   methods: {
     next_tick() {
@@ -64,9 +64,9 @@ export default {
     },
     ...mapMutations({
       change_current: "jobs/change_current",
-      push_queued_jobs: "jobs/push_queued_jobs"
-    })
-  }
+      push_queued_jobs: "jobs/push_queued_jobs",
+    }),
+  },
 }
 </script>
 

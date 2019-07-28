@@ -46,22 +46,22 @@ export default {
     ScanSummary,
     FileSummary,
     Message,
-    Files
+    Files,
   },
   data() {
     return {
-      interval: null
+      interval: null,
     }
   },
   computed: {
     is_processing() {
       return this.report.status_code === 1 || this.report.status_code === null
     },
-    ...mapState(["report"])
+    ...mapState(["report"]),
   },
   validate({ params }) {
     return /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(
-      params.resultid
+      params.resultid,
     )
   },
   created() {
@@ -87,8 +87,8 @@ export default {
       } else {
         clearInterval(this.interval)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

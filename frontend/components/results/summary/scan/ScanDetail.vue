@@ -19,7 +19,7 @@ import Download from "~/components/results/summary/scan/Download"
 export default {
   name: "ScanSummary",
   components: {
-    Download
+    Download,
   },
   props: ["scanSummary"],
   computed: {
@@ -27,27 +27,27 @@ export default {
       return [
         {
           key: "mode",
-          label: "Mode"
+          label: "Mode",
         },
         {
           key: "detail",
-          label: "Detail"
+          label: "Detail",
         },
         {
           key: "running_time",
-          label: "Running Time"
+          label: "Running Time",
         },
         {
           key: "timestamp",
-          label: "Timestamp"
+          label: "Timestamp",
         },
         {
           key: "uuid",
-          label: "Download dumped file"
-        }
+          label: "Download dumped file",
+        },
       ]
-    }
-  }
+    },
+  },
 }
 </script>
 

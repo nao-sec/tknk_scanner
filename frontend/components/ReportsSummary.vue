@@ -29,7 +29,7 @@ import Yara from "~/components/Yara"
 export default {
   name: "ReportsSummary",
   components: {
-    Yara
+    Yara,
   },
   props: ["items"],
   computed: {
@@ -42,7 +42,7 @@ export default {
         { key: "detect_rules", label: "Detect Rules" },
         { key: "is_in_vt", label: "VirusTotal" },
         { key: "timestamp", label: "Timestamp" },
-        { key: "uuid", label: "Results" }
+        { key: "uuid", label: "Results" },
       ]
     },
     reports_summary() {
@@ -90,11 +90,11 @@ export default {
               ? false
               : report.avclass.flag,
           timestamp: report.timestamp,
-          uuid: report.UUID
+          uuid: report.UUID,
         }
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -25,7 +25,7 @@ import ReportsSummary from "~/components/ReportsSummary"
 export default {
   name: "PageIndex",
   components: {
-    ReportsSummary
+    ReportsSummary,
   },
   validate({ params }) {
     return /\d+/.test(params.page)
@@ -34,7 +34,7 @@ export default {
     return {
       scope_results: [],
       current_page: 0,
-      max_pages: 0
+      max_pages: 0,
     }
   },
   watch: {
@@ -42,7 +42,7 @@ export default {
       if (current !== 0) {
         this.$router.push({ name: "page-page", params: { page: next } })
       }
-    }
+    },
   },
   async mounted() {
     const { data } = await this.$axios
@@ -54,7 +54,7 @@ export default {
     this.current_page = parseInt(this.$route.params.page, 10)
     this.max_pages = data.page_size
     this.scope_results = data.page
-  }
+  },
 }
 </script>
 
