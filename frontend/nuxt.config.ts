@@ -1,4 +1,7 @@
 import NuxtConfiguration from "@nuxt/config"
+import { config as dConfig } from "dotenv"
+
+dConfig()
 
 const config: NuxtConfiguration = {
   mode: "spa",
