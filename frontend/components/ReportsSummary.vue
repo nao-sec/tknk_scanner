@@ -14,7 +14,9 @@
       </b-badge>
     </template>
     <template slot="uuid" slot-scope="data">
-      <nuxt-link :to="{ name: 'results-resultid', params: { resultid: data.value } }">
+      <nuxt-link
+        :to="{ name: 'results-resultid', params: { resultid: data.value } }"
+      >
         Result
       </nuxt-link>
     </template>
@@ -22,33 +24,37 @@
 </template>
 
 <script>
-import Yara from '~/components/Yara'
+import Yara from "~/components/Yara"
 
 export default {
-  name: 'ReportsSummary',
+  name: "ReportsSummary",
   components: {
     Yara
   },
-  props: ['items'],
+  props: ["items"],
   computed: {
     fields() {
       return [
-        { key: 'file_name', label: 'FileName' },
-        { key: 'size', label: 'Size' },
-        { key: 'mode', label: 'Mode' },
-        { key: 'run_time', label: 'Run Time' },
-        { key: 'detect_rules', label: 'Detect Rules' },
-        { key: 'is_in_vt', label: 'VirusTotal' },
-        { key: 'timestamp', label: 'Timestamp' },
-        { key: 'uuid', label: 'Results' }
+        { key: "file_name", label: "FileName" },
+        { key: "size", label: "Size" },
+        { key: "mode", label: "Mode" },
+        { key: "run_time", label: "Run Time" },
+        { key: "detect_rules", label: "Detect Rules" },
+        { key: "is_in_vt", label: "VirusTotal" },
+        { key: "timestamp", label: "Timestamp" },
+        { key: "uuid", label: "Results" }
       ]
     },
     reports_summary() {
-      return this.items.map((report) => {
+      return this.items.map(report => {
         let detectRules = []
 
-        if (report.scans !== null && report.scans !== undefined && report.scans.length !== 0) {
-          report.scans.forEach((scan) => {
+        if (
+          report.scans !== null &&
+          report.scans !== undefined &&
+          report.scans.length !== 0
+        ) {
+          report.scans.forEach(scan => {
             detectRules = detectRules.concat(scan.detect_rule)
           })
         }
@@ -80,7 +86,9 @@ export default {
               ? null
               : report.target_scan.size,
           is_in_vt:
-            report.avclass === undefined || report.avclass === null ? false : report.avclass.flag,
+            report.avclass === undefined || report.avclass === null
+              ? false
+              : report.avclass.flag,
           timestamp: report.timestamp,
           uuid: report.UUID
         }

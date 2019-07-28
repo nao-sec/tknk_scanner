@@ -25,8 +25,9 @@ export const getters = {
     return [
       {
         AVClass: state.avclass,
-        'DIE Indicators': state.die,
-        detect_rules: state.target_scan === null ? null : state.target_scan.detect_rule
+        "DIE Indicators": state.die,
+        detect_rules:
+          state.target_scan === null ? null : state.target_scan.detect_rule
       }
     ]
   },
@@ -34,7 +35,7 @@ export const getters = {
     return [
       {
         mode: state.mode,
-        detail: state.result === null ? '' : state.result.detail,
+        detail: state.result === null ? "" : state.result.detail,
         running_time: state.run_time,
         timestamp: state.timestamp,
         uuid: state.uuid

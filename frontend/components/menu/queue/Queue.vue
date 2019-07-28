@@ -1,18 +1,22 @@
 <template>
   <div>
     <b-navbar-nav>
-      <b-nav-item :to="{ name: 'jobs' }" :active="current_length !== 0 || jobs.queued.length !== 0">
-        Processing: <span :class="current_class">{{ current_length }}</span> / Queued:
+      <b-nav-item
+        :to="{ name: 'jobs' }"
+        :active="current_length !== 0 || jobs.queued.length !== 0"
+      >
+        Processing: <span :class="current_class">{{ current_length }}</span> /
+        Queued:
         <span :class="queued_class">{{ jobs.queued.length }}</span>
       </b-nav-item>
     </b-navbar-nav>
   </div>
 </template>
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations } from "vuex"
 
 export default {
-  name: 'Queue',
+  name: "Queue",
   data() {
     return {
       paused: false
@@ -26,12 +30,12 @@ export default {
       return this.jobs.current !== null ? 1 : 0
     },
     current_class() {
-      return this.current_length === 0 ? null : ['working']
+      return this.current_length === 0 ? null : ["working"]
     },
     queued_class() {
-      return this.jobs.queued.length === 0 ? null : ['working']
+      return this.jobs.queued.length === 0 ? null : ["working"]
     },
-    ...mapState(['jobs'])
+    ...mapState(["jobs"])
   },
   methods: {
     next_tick() {
@@ -46,21 +50,21 @@ export default {
     },
     fetch_jobs() {
       this.$axios
-        .get('/jobs', { progress: false })
-        .then((res) => {
+        .get("/jobs", { progress: false })
+        .then(res => {
           if (res.data.status_code === 0) {
             this.change_current(res.data.current_job)
             this.push_queued_jobs(res.data.queued_jobs)
           }
         })
-        .catch((e) => {
+        .catch(e => {
           console.error(`Fetching jobs caused a error: ${e}`)
           this.paused = true
         })
     },
     ...mapMutations({
-      change_current: 'jobs/change_current',
-      push_queued_jobs: 'jobs/push_queued_jobs'
+      change_current: "jobs/change_current",
+      push_queued_jobs: "jobs/push_queued_jobs"
     })
   }
 }

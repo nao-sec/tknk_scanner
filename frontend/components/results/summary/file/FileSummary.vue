@@ -30,23 +30,23 @@
 </template>
 
 <script>
-import Hash from '~/components/results/summary/Hash'
+import Hash from "~/components/results/summary/Hash"
 
 export default {
-  name: 'FileSummary',
+  name: "FileSummary",
   components: {
     Hash
   },
-  props: ['fileSummary'],
+  props: ["fileSummary"],
   computed: {
     fields() {
       return [
-        { key: 'file_name', label: 'File Name' },
-        { key: 'size', label: 'Size' },
-        { key: 'magic', label: 'Magic' },
-        { key: 'md5', label: 'MD5' },
-        { key: 'sha1', label: 'SHA-1' },
-        { key: 'sha256', label: 'SHA-256' }
+        { key: "file_name", label: "File Name" },
+        { key: "size", label: "Size" },
+        { key: "magic", label: "Magic" },
+        { key: "md5", label: "MD5" },
+        { key: "sha1", label: "SHA-1" },
+        { key: "sha256", label: "SHA-256" }
       ]
     }
   }

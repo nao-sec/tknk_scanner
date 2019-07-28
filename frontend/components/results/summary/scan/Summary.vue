@@ -10,20 +10,20 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import Status from '~/components/results/summary/scan/Status'
-import ScanSummary from '~/components/results/summary/scan/ScanDetail'
+import { mapState, mapGetters } from "vuex"
+import Status from "~/components/results/summary/scan/Status"
+import ScanSummary from "~/components/results/summary/scan/ScanDetail"
 
 export default {
-  name: 'Summary',
+  name: "Summary",
   components: {
     Status,
     ScanSummary
   },
   computed: {
-    ...mapState(['report']),
+    ...mapState(["report"]),
     ...mapGetters({
-      scan_summary: 'report/scan_summary'
+      scan_summary: "report/scan_summary"
     })
   }
 }

@@ -1,7 +1,11 @@
 <template>
   <b-navbar toggleable="md" type="dark" class="navbar">
     <b-navbar-brand :to="{ name: 'index' }">
-      <img src="~/assets/tknk.png" class="d-inline-block align-top" alt="tknk_scanner" />
+      <img
+        src="~/assets/tknk.png"
+        class="d-inline-block align-top"
+        alt="tknk_scanner"
+      />
       tknk_scanner
     </b-navbar-brand>
     <b-navbar-toggle target="nav_collapse" />
@@ -24,11 +28,11 @@
 </template>
 
 <script>
-import Queue from '~/components/menu/queue/Queue'
-import Search from '~/components/menu/Search'
+import Queue from "~/components/menu/queue/Queue"
+import Search from "~/components/menu/Search"
 
 export default {
-  name: 'Menu',
+  name: "Menu",
   components: {
     Queue,
     Search

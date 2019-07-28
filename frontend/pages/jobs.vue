@@ -22,11 +22,11 @@
 </template>
 
 <script>
-import List from '~/components/jobs/List'
-import { mapState } from 'vuex'
+import { mapState } from "vuex"
+import List from "~/components/jobs/List"
 
 export default {
-  name: 'Jobs',
+  name: "Jobs",
   components: {
     List
   },
@@ -38,7 +38,7 @@ export default {
         return [this.jobs.current]
       }
     },
-    ...mapState(['jobs'])
+    ...mapState(["jobs"])
   }
 }
 </script>

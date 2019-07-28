@@ -13,8 +13,8 @@
 
 <script>
 export default {
-  name: 'Status',
-  props: ['status']
+  name: "Status",
+  props: ["status"]
 }
 </script>
 

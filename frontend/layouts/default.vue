@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import Page from '~/components/ui/Page'
-import Menu from '~/components/menu/Menu.vue'
+import Page from "~/components/ui/Page"
+import Menu from "~/components/menu/Menu.vue"
 
 export default {
   components: {

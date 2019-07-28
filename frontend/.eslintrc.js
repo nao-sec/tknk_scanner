@@ -1,27 +1,25 @@
 module.exports = {
-  root: true,
-  env: {
-    browser: true,
-    node: true
-  },
   parserOptions: {
     parser: '@typescript-eslint/parser'
   },
   extends: [
-    'plugin:vue/recommended',
     '@nuxtjs',
+    "eslint:recommended",
+    "plugin:vue/recommended",
+    'plugin:prettier/recommended',
+    'prettier/vue',
+    'prettier/@typescript-eslint'
   ],
   plugins: [
+    'prettier',
     'vue',
-    '@typescript-eslint',
+    "@typescript-eslint",
   ],
   rules: {
-    '@typescript-eslint/no-unused-vars': 'error',
-    'no-console': 0,
-    "vue/html-self-closing": ["error", {
-      "html": {
-        "void": "always",
-      }
-    }],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "no-console": "off",
+    "vue/max-attributes-per-line": "off",
+    "prettier/prettier": ["error", { "semi": false }]
   }
-};
+}
