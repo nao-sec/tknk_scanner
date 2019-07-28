@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import UploadForm from '~/components/UploadForm'
+import UploadForm from "~/components/UploadForm"
 
 export default {
   components: {

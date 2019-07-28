@@ -14,10 +14,10 @@
 </template>
 
 <script>
-import ReportsSummary from '~/components/ReportsSummary'
+import ReportsSummary from "~/components/ReportsSummary"
 
 export default {
-  name: 'SearchIndex',
+  name: "SearchIndex",
   components: {
     ReportsSummary
   },
@@ -35,11 +35,11 @@ export default {
     // is it truly length?
     const length = params.hash.length
     switch (params.type) {
-      case 'md5':
+      case "md5":
         return length === 32
-      case 'sha1':
+      case "sha1":
         return length === 40
-      case 'sha256':
+      case "sha256":
         return length === 64
       default:
         return false
@@ -48,7 +48,7 @@ export default {
   async mounted() {
     const { data } = await this.$axios
       .get(`/search/${this.$route.params.type}/${this.$route.params.hash}`)
-      .catch((e) => {
+      .catch(e => {
         console.error(`Page fetching error: ${e}`)
         this.$root.error(e)
       })

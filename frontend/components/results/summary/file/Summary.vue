@@ -9,7 +9,9 @@
           <div class="badges">
             <b-badge
               :variant="is_in_vt ? 'primary' : 'warning'"
-              :href="is_in_vt ? 'https://www.virustotal.com/#/file/' + sha256 : null"
+              :href="
+                is_in_vt ? 'https://www.virustotal.com/#/file/' + sha256 : null
+              "
               target="_blank"
             >
               VirusTotal
@@ -31,23 +33,23 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import FileSummary from '~/components/results/summary/file/FileSummary'
-import DetectsSummary from '~/components/results/summary/file/DetectsSummary'
+import { mapGetters } from "vuex"
+import FileSummary from "~/components/results/summary/file/FileSummary"
+import DetectsSummary from "~/components/results/summary/file/DetectsSummary"
 
 export default {
-  name: 'Summary',
+  name: "Summary",
   components: {
     FileSummary,
     DetectsSummary
   },
   computed: {
     ...mapGetters({
-      file_summary: 'report/file_summary',
-      detects_summary: 'report/detects_summary',
-      file_name: 'report/file_name',
-      is_in_vt: 'report/is_in_vt',
-      sha256: 'report/sha256'
+      file_summary: "report/file_summary",
+      detects_summary: "report/detects_summary",
+      file_name: "report/file_name",
+      is_in_vt: "report/is_in_vt",
+      sha256: "report/sha256"
     })
   }
 }

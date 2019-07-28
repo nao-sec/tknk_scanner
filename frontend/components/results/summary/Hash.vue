@@ -1,7 +1,9 @@
 <template>
   <div id="hash">
     <div>
-      <span ref="copyIcon"><font-awesome-icon :icon="icon" @click="copy" /></span>
+      <span ref="copyIcon"
+        ><font-awesome-icon :icon="icon" @click="copy"
+      /></span>
       <b-tooltip
         :show.sync="does_show_tooltip"
         triggers="click"
@@ -17,8 +19,8 @@
 
 <script>
 export default {
-  name: 'Hash',
-  props: ['hash'],
+  name: "Hash",
+  props: ["hash"],
   data() {
     return {
       does_show_tooltip: false,
@@ -28,16 +30,16 @@ export default {
   computed: {
     message() {
       if (this.has_copy_error) {
-        return 'Copy failed, Is your browser newest?'
+        return "Copy failed, Is your browser newest?"
       } else {
-        return 'Copied'
+        return "Copied"
       }
     },
     icon() {
       if (!this.does_show_tooltip) {
-        return 'clipboard'
+        return "clipboard"
       } else {
-        return 'clipboard-check'
+        return "clipboard-check"
       }
     }
   },

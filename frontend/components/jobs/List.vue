@@ -12,21 +12,21 @@
 </template>
 
 <script>
-import JobStatus from '~/components/jobs/JobStatus'
+import JobStatus from "~/components/jobs/JobStatus"
 
 export default {
-  name: 'List',
+  name: "List",
   components: {
     JobStatus
   },
-  props: ['jobs'],
+  props: ["jobs"],
   computed: {
     items() {
-      return this.jobs.map((o) => {
+      return this.jobs.map(o => {
         return {
-          'File Name': o.config.target_file,
+          "File Name": o.config.target_file,
           Mode: o.config.mode,
-          'Running Time': o.config.time,
+          "Running Time": o.config.time,
           Status: o.id
         }
       })

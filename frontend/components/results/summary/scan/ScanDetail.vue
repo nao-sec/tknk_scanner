@@ -14,36 +14,36 @@
 </template>
 
 <script>
-import Download from '~/components/results/summary/scan/Download'
+import Download from "~/components/results/summary/scan/Download"
 
 export default {
-  name: 'ScanSummary',
+  name: "ScanSummary",
   components: {
     Download
   },
-  props: ['scanSummary'],
+  props: ["scanSummary"],
   computed: {
     fields() {
       return [
         {
-          key: 'mode',
-          label: 'Mode'
+          key: "mode",
+          label: "Mode"
         },
         {
-          key: 'detail',
-          label: 'Detail'
+          key: "detail",
+          label: "Detail"
         },
         {
-          key: 'running_time',
-          label: 'Running Time'
+          key: "running_time",
+          label: "Running Time"
         },
         {
-          key: 'timestamp',
-          label: 'Timestamp'
+          key: "timestamp",
+          label: "Timestamp"
         },
         {
-          key: 'uuid',
-          label: 'Download dumped file'
+          key: "uuid",
+          label: "Download dumped file"
         }
       ]
     }

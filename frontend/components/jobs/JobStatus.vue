@@ -1,7 +1,15 @@
 <template>
   <div class="status">
-    <font-awesome-icon :icon="status_icon" :class="status_class" :spin="status === 1" size="xs" />
-    <nuxt-link v-if="status === 0" :to="{ name: 'results-resultid', params: { resultid: id } }">
+    <font-awesome-icon
+      :icon="status_icon"
+      :class="status_class"
+      :spin="status === 1"
+      size="xs"
+    />
+    <nuxt-link
+      v-if="status === 0"
+      :to="{ name: 'results-resultid', params: { resultid: id } }"
+    >
       Results
     </nuxt-link>
   </div>
@@ -9,8 +17,8 @@
 
 <script>
 export default {
-  name: 'JobStatus',
-  props: ['id'],
+  name: "JobStatus",
+  props: ["id"],
   data() {
     return {
       status: null,
@@ -22,28 +30,28 @@ export default {
     status_icon() {
       if (this.status === 1) {
         // processing
-        return 'spinner'
+        return "spinner"
       } else if (this.status === 0 && this.is_success) {
         // done and scanning success
-        return 'check-circle'
+        return "check-circle"
       } else if (this.status === 0 && !this.is_success) {
         // done, but fail scanning
-        return 'times-circle'
+        return "times-circle"
       } else {
         // not implemented state
-        return 'question-circle'
+        return "question-circle"
       }
     },
     status_class() {
       if (this.status === 0 && this.is_success) {
         // done and scanning success
-        return ['success']
+        return ["success"]
       } else if (this.status === 0 && !this.is_success) {
         // done, but fail scanning
-        return ['fail']
+        return ["fail"]
       } else {
         // not implemented state
-        return ['unknown']
+        return ["unknown"]
       }
     }
   },
@@ -54,13 +62,13 @@ export default {
     fetch_result() {
       this.$axios
         .get(`/results/${this.id}`, { progress: false })
-        .then((res) => {
+        .then(res => {
           this.status = res.data.status_code
           if (res.data.status_code === 0) {
             this.is_success = res.data.report.result.is_success
           }
         })
-        .catch((e) => {
+        .catch(e => {
           console.error(`Fetching result error: ${e}`)
           this.paused = true
         })

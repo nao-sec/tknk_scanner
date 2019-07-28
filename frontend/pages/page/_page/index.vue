@@ -20,10 +20,10 @@
 </template>
 
 <script>
-import ReportsSummary from '~/components/ReportsSummary'
+import ReportsSummary from "~/components/ReportsSummary"
 
 export default {
-  name: 'PageIndex',
+  name: "PageIndex",
   components: {
     ReportsSummary
   },
@@ -38,17 +38,19 @@ export default {
     }
   },
   watch: {
-    current_page: function (next, current) {
+    current_page: function(next, current) {
       if (current !== 0) {
-        this.$router.push({ name: 'page-page', params: { page: next } })
+        this.$router.push({ name: "page-page", params: { page: next } })
       }
     }
   },
   async mounted() {
-    const { data } = await this.$axios.get(`/page/${this.$route.params.page}`).catch((e) => {
-      console.error(`Page fetching error: ${e}`)
-      this.$root.error(e)
-    })
+    const { data } = await this.$axios
+      .get(`/page/${this.$route.params.page}`)
+      .catch(e => {
+        console.error(`Page fetching error: ${e}`)
+        this.$root.error(e)
+      })
     this.current_page = parseInt(this.$route.params.page, 10)
     this.max_pages = data.page_size
     this.scope_results = data.page
