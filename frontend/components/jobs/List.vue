@@ -11,27 +11,30 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from "vue-property-decorator"
 import JobStatus from "~/components/jobs/JobStatus"
 
-export default {
-  name: "List",
+@Component({
   components: {
     JobStatus,
   },
-  props: ["jobs"],
-  computed: {
-    items() {
-      return this.jobs.map(o => {
-        return {
-          "File Name": o.config.target_file,
-          Mode: o.config.mode,
-          "Running Time": o.config.time,
-          Status: o.id,
-        }
-      })
-    },
-  },
+})
+export default class List extends Vue {
+  // props
+  @Prop({ type: [Object] })
+  jobs: object[] = [{}]
+
+  get items() {
+    return this.jobs.map(o => {
+      return {
+        "File Name": o.config.target_file,
+        Mode: o.config.mode,
+        "Running Time": o.config.time,
+        Status: o.id,
+      }
+    })
+  }
 }
 </script>
 
