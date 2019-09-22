@@ -17,7 +17,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator"
-import { AxiosRequestConfig } from "axios"
 
 @Component
 export default class JobStatus extends Vue {
@@ -31,7 +30,7 @@ export default class JobStatus extends Vue {
   id: string = ""
 
   // computed
-  get statusIcon() {
+  get statusIcon(): string {
     if (this.status === 1) {
       // processing
       return "spinner"
@@ -47,7 +46,7 @@ export default class JobStatus extends Vue {
     }
   }
 
-  get statusClass() {
+  get statusClass(): string[] {
     if (this.status === 0 && this.isSuccess) {
       // done and scanning success
       return ["success"]
@@ -63,11 +62,8 @@ export default class JobStatus extends Vue {
   // methods
   @Emit()
   fetchResult() {
-    const config: AxiosRequestConfig = {
-      progress: boolean = false
-    }
     this.$axios
-      .get(`/results/${this.id}`, { progress: false })
+      .get(`/results/${this.id}`)
       .then(res => {
         this.status = res.data.status_code
         if (res.data.status_code === 0) {
