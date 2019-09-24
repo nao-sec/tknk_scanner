@@ -1,5 +1,4 @@
-tknk_scanner![](https://raw.githubusercontent.com/toolswatch/badges/master/arsenal/europe/2018.svg)
-===
+# tknk_scanner ![](https://raw.githubusercontent.com/toolswatch/badges/master/arsenal/europe/2018.svg)
 The original code of a malware must be scanned using YARA rules after processing with a debugger (or other means) to account for obfuscated malware binaries. This is a complicated process and requires an extensive malware analysis environment. The tknk_scanner is a community-based integrated malware identification system, which aims to easily identify malware families by automating this process using an integration of open source community-based tools and freeware. The original malware code can be scanned with  with your own YARA rules by submitting the malware in PE format to the scanner. tknk_scanner can thus support surface analysis performed by SOC operators, CSIRT members, and malware analysts.
 
 ![tknk02](https://user-images.githubusercontent.com/18203311/49505070-4cc12080-f8be-11e8-8904-3a02e72d3882.png)
