@@ -248,7 +248,7 @@ components:
         meta:
           $ref: "#/components/schemas/meta"
         results:
-          $ref: "#/components/schemas/results"
+          $ref: "#/components/schemas/result"
     meta:
       type: object
       properties:
@@ -258,8 +258,8 @@ components:
         timestamp:
           type: string
           example: "2018-11-23T20:42:23.749302"
-        settings:
-          $ref: "#/components/schemas/settings"
+        setting:
+          $ref: "#/components/schemas/setting"
         is_dumped:
           type: boolean
           format: int32
@@ -273,7 +273,7 @@ components:
           example: "Detected with yara rule!"
         plugins:
           $ref: "#/components/schemas/plugins_conf"
-    settings:
+    setting:
       type: object
       properties:
         mode:
@@ -298,18 +298,18 @@ components:
           type: boolean
           format: int32
           example: 1
-    results:
+    result:
       type: object
       properties:
-        dump_files_scans:
+        dump_files_scan:
           type: array
           items:
-            $ref: "#/components/schemas/dump_files_scans"
+            $ref: "#/components/schemas/dump_files_scan"
         upload_file_scan:
           $ref: "#/components/schemas/upload_file_scan"
         plugins:
           $ref: "#/components/schemas/plugins"
-    dump_files_scans:
+    dump_files_scan:
       properties:
         detect_rule:
           type: array
@@ -368,8 +368,8 @@ components:
         data:
           type: array
           items:
-            $ref: "#/components/schemas/data"
-    data:
+            $ref: "#/components/schemas/detects"
+    detects:
       properties:
         family_name:
           type: string
@@ -450,11 +450,22 @@ components:
         page:
           type: array
           items:
-            $ref: "#/components/schemas/report"
+            $ref: "#/components/schemas/result_summary"
         page_size:
           type: integer
           format: int32
           example: 1
+    result_summary:
+      properties:
+        UUID:
+          type: string
+          example: "41ad0e99-f982-4355-abf9-b6a85078efc4"
+        meta:
+          $ref: "#/components/schemas/meta"
+        dump_files_scan:
+          $ref: "#/components/schemas/dump_files_scan"
+        upload_file_scan:
+          $ref: "#/components/schemas/upload_file_scan"
     search_results:
       properties:
         results:
@@ -464,25 +475,18 @@ components:
     jobs:
       properties:
         current_job:
-          $ref: "#/components/schemas/current_job"
+          $ref: "#/components/schemas/job"
         queued_jobs:
           type: array
           items:
-            $ref: "#/components/schemas/queued_jobs"     
-    current_job:
+            $ref: "#/components/schemas/job"     
+    job:
       properties:
         config:
             $ref: "#/components/schemas/job_conf"  
         id:
           type: string
           example: "de9e01a2-7603-4098-8503-e82742a4b2c1"
-    queued_jobs:
-      properties:
-        config:
-          $ref: "#/components/schemas/job_conf"
-        id:
-          type: string
-          example: "f5f5f39d-6421-4824-b724-e532704b1d83"
     job_conf:
       properties:
         target_file:
@@ -531,3 +535,4 @@ components:
           example: 2
         message:
           type: string
+        
