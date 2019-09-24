@@ -1,6 +1,6 @@
 openapi: "3.0.0"
 info:
-  version: 1.0.0
+  version: 2.0.0
   title: tknk_scanner API
 servers:
   - url: http://0.0.0.0/api
@@ -245,64 +245,87 @@ components:
           $ref: "#/components/schemas/report"  
     report:
       properties:
-        mode:
+        meta:
+          $ref: "#/components/schemas/meta"
+        results:
+          $ref: "#/components/schemas/results"
+    meta:
+      type: object
+      properties:
+        UUID:
           type: string
-          example: "hollows_hunter"
+          example: "41ad0e99-f982-4355-abf9-b6a85078efc4"
         timestamp:
           type: string
           example: "2018-11-23T20:42:23.749302"
+        settings:
+          $ref: "#/components/schemas/settings"
+        is_dumped:
+          type: boolean
+          format: int32
+          example: 1
+        is_matched:
+          type: boolean
+          format: int32
+          example: 1
+        detail:
+          type: string
+          example: "Detected with yara rule!"
+        plugins:
+          $ref: "#/components/schemas/plugins_conf"
+    settings:
+      type: object
+      properties:
+        mode:
+          type: string
+          example: "hollows_hunter"
         run_time:
           type: integer
           format: int32
           example: 20
-        scans:
-          type: array
-          items:
-            $ref: "#/components/schemas/scans"
-        target_scan:
-            $ref: "#/components/schemas/target_scan"
-        status_code:
-          type: integer
-          format: int32
-          example: 0
-        UUID:
-          type: string
-          example: "41ad0e99-f982-4355-abf9-b6a85078efc4"
-        magic:
-          type: string
-          example: "PE32 executable (GUI) Intel 80386, for MS Windows"
-        virus_total:
+    plugins_conf:
+      type: object
+      properties:
+        avclass:
           type: boolean
           format: int32
           example: 1
-        avclass:
-          $ref: "#/components/schemas/avclass_key"
         die:
-          type: string
-          example: 
-            - "PE: compiler: MASM32(8-11)[-]"
-            - "PE: linker: Microsoft Linker(12.0)[EXE32]"
-    avclass_key:
-      type: object
-      properties:
-        flag:
-          type: integer
+          type: boolean
           format: int32
           example: 1
-        data:
+        suricata:
+          type: boolean
+          format: int32
+          example: 1
+    results:
+      type: object
+      properties:
+        dump_files_scans:
           type: array
           items:
-            $ref: "#/components/schemas/data"
-    data:
+            $ref: "#/components/schemas/dump_files_scans"
+        upload_file_scan:
+          $ref: "#/components/schemas/upload_file_scan"
+        plugins:
+          $ref: "#/components/schemas/plugins"
+    dump_files_scans:
       properties:
-        family_name:
+        detect_rule:
+          type: array
+          items:
+            type: string
+            example: "nymaim"
+        file_name:
           type: string
-          example: "nymaim"
-        count:
-          type: integer
-          format: int32
-          example: 2
-    target_scan:
+          example: "TempuzL51.exe"
+        size:
+          type: string
+          example: "4.1KB"
+        magic:
+          type: string
+          example: "PE32 executable (GUI) Intel 80386, for MS Windows"
+    upload_file_scan:
       properties:
         md5:
           type: string    
@@ -324,19 +347,104 @@ components:
         size:
           type: string
           example: "86.0KB"
-    scans:
+    plugins:
       properties:
-        detect_rule:
+        avclass_key:
+          $ref: "#/components/schemas/avclass"
+        die:
+          type: string
+          example: 
+            - "PE: compiler: MASM32(8-11)[-]"
+            - "PE: linker: Microsoft Linker(12.0)[EXE32]"
+        suricata:
+           $ref: "#/components/schemas/suricata"
+    avclass:
+      type: object
+      properties:
+        flag:
+          type: integer
+          format: int32
+          example: 1
+        data:
           type: array
           items:
-            type: string
-            example: "nymaim"
-        file_name:
+            $ref: "#/components/schemas/data"
+    data:
+      properties:
+        family_name:
           type: string
-          example: "TempuzL51.exe"
-        size:
+          example: "nymaim"
+        count:
+          type: integer
+          format: int32
+          example: 2
+    suricata:
+      properties:
+        alert_list:
+          type: array
+          items:
+            $ref: "#/components/schemas/alert_list"
+    alert_list:
+      type: object
+      properties:
+        event_type:
           type: string
-          example: "4.1KB"
+          example: "alert"
+        timestamp:
+          type: string
+          example: "2019-06-12T15:44:32.440396+0000"
+        alert:
+          type: object
+          properties:
+            category:
+              type: string
+              example: "A Network Trojan was detected"
+            signature:
+              type: string
+              example: "MALWARE-CNC Win.Trojan.Revenge RAT inbound heartbeat check"
+            signature_id:
+              type: integer
+              format: int32
+              example: 45962
+        proto:
+          type: string
+          example: "TCP"
+        dest_ip:
+          type: string
+          example: "192.168.122.2"
+        dest_port:
+          type: integer
+          format: int32
+          example: 56248
+        src_ip:
+          type: string
+          example: "35.231.236.85"
+        src_port:
+          type: integer
+          format: int32
+          example: 333
+        http:
+          type: object
+          properties:
+            hostname:
+              type: string
+              example: "vbih.tk"
+            http_method:
+              type: string
+              example: "POST"
+            http_user_agent:
+              type: string
+              example: "Mozilla/4.08 (Charon; Inferno)"
+            length:
+              type: integer
+              format: int32
+              example: 0
+            protocol:
+              type: string
+              example: "HTTP/1.0"
+            url:
+              type: string
+              example: "/V1/five/fre.php"
     page:
       properties:
         page:
