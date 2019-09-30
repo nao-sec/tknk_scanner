@@ -44,7 +44,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/upload_response"
+                $ref: "#/components/schemas/upload_status"
         '404':
           description: "something wrong"
           content:
@@ -95,7 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/result_response"
+                $ref: "#/components/schemas/report_response"
         404:
           description: unexpected error
           content:
@@ -137,7 +137,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/page"
+                $ref: "#/components/schemas/recent_reports"
         '404':
           description: unexpected error
           content:
@@ -203,7 +203,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"  
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     conf:
@@ -222,7 +222,7 @@ components:
           type: integer
           format: int32
           example: 20
-    upload_response:
+    upload_status:
       properties:
         status_code:
           type: integer
@@ -231,7 +231,7 @@ components:
         path:
           type: string
           example: "target/hoge.exe"
-    result_response:
+    report_response:
       type: object
       required:
         - status_code
@@ -247,7 +247,7 @@ components:
       properties:
         meta:
           $ref: "#/components/schemas/meta"
-        results:
+        result:
           $ref: "#/components/schemas/result"
     meta:
       type: object
@@ -304,14 +304,14 @@ components:
         dump_files_scan:
           type: array
           items:
-            $ref: "#/components/schemas/dump_files_scan"
+            $ref: "#/components/schemas/dumped_files_scan_report"
         upload_file_scan:
-          $ref: "#/components/schemas/upload_file_scan"
+          $ref: "#/components/schemas/uploaded_file_scan_report"
         plugins:
           $ref: "#/components/schemas/plugins"
-    dump_files_scan:
+    dumped_files_scan_report:
       properties:
-        detect_rule:
+        detect_rules:
           type: array
           items:
             type: string
@@ -325,7 +325,7 @@ components:
         magic:
           type: string
           example: "PE32 executable (GUI) Intel 80386, for MS Windows"
-    upload_file_scan:
+    uploaded_file_scan_report:
       properties:
         md5:
           type: string    
@@ -336,7 +336,7 @@ components:
         sha256:
           type: string
           example: "27c064b345343c9d3152164b8ea0f777e71ce9c4bd7b79ae39fd716533dd8b49"
-        detect_rule:
+        detect_rules:
           type: array
           items:
             type: string
@@ -365,11 +365,11 @@ components:
           type: integer
           format: int32
           example: 1
-        data:
+        detects:
           type: array
           items:
-            $ref: "#/components/schemas/detects"
-    detects:
+            $ref: "#/components/schemas/detect"
+    detect:
       properties:
         family_name:
           type: string
@@ -380,11 +380,11 @@ components:
           example: 2
     suricata:
       properties:
-        alert_list:
+        events:
           type: array
           items:
-            $ref: "#/components/schemas/alert_list"
-    alert_list:
+            $ref: "#/components/schemas/event"
+    event:
       type: object
       properties:
         event_type:
@@ -445,33 +445,33 @@ components:
             url:
               type: string
               example: "/V1/five/fre.php"
-    page:
+    recent_reports:
       properties:
-        page:
+        reports:
           type: array
           items:
-            $ref: "#/components/schemas/result_summary"
+            $ref: "#/components/schemas/report_summary"
         page_size:
           type: integer
           format: int32
           example: 1
-    result_summary:
+    report_summary:
       properties:
         UUID:
           type: string
           example: "41ad0e99-f982-4355-abf9-b6a85078efc4"
         meta:
           $ref: "#/components/schemas/meta"
-        dump_files_scan:
-          $ref: "#/components/schemas/dump_files_scan"
-        upload_file_scan:
-          $ref: "#/components/schemas/upload_file_scan"
+        dumped_files_scan_report:
+          $ref: "#/components/schemas/dumped_files_scan_report"
+        uploaded_file_scan_report:
+          $ref: "#/components/schemas/uploaded_file_scan_report"
     search_results:
       properties:
         results:
           type: array
           items:
-            $ref: "#/components/schemas/report"
+            $ref: "#/components/schemas/report_summary"
     jobs:
       properties:
         current_job:
