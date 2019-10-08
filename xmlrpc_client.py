@@ -289,9 +289,10 @@ def analyze(uid):
         subprocess.run(['unzip', "dump.zip"], cwd="result") 
 
         p = Path("result/dump/")
+    
 
         for f in p.glob("**/*"):
-            if (".exe" == f.suffix) or (".dll" == f.suffix) or (".dmp" == f.suffix):
+            if (".exe" == f.suffix) or (".dll" == f.suffix) or (".shc" == f.suffix) or (".dmp" == f.suffix):
                 size = os.path.getsize(str(f))
                 matches = rules.match(str(f.resolve()))
                 report['dump_files_scans'].append({"detect_rule":list(map(str,matches)), "file_name":f.name, "size":size})
