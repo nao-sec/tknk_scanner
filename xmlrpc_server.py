@@ -231,7 +231,7 @@ def dump(config):
         print(("[*] wait for dump %d seconds\n") % config["time"])   
         time.sleep(config["time"])
 
-    print("[*] dumping\n")
+    print("[*] Dumping\n")
 
     if config["mode"] == "hollows_hunter":
         SuspendProcess(PID)
@@ -250,12 +250,11 @@ def dump(config):
         for pid in new_ProcessIds:
             subprocess.call(["procdump.exe", "-ma", str(pid), "/AcceptEula"], cwd=str(work_dir.joinpath("dump/")))
    
-    elif config["mode"] == "scylla":
-        SuspendProcess(PID)
-        scylla_dump(PID, copy_file, config['entrypoint'])
-
-    print("[*] make zip\n")
-    subprocess.call(['powershell', "compress-archive", "-Force", str(work_dir.joinpath("dump/")) , str(work_dir.joinpath("dump.zip"))])
+    print("[*] Get network connection info\n")
+    subprocess.call(['powershell', 'Get-NetTCPConnection', '|', 'Select-Object', '-Property', 'RemoteAddress, RemotePort, State, OwningProcess, { (Get-Process -Id $_.OwningProcess).Name}, {(Get-Process -Id $_.OwningProcess) | Select-Object -ExpandProperty Path}', '|', 'ConvertTo-Csv', '|', 'Select-String -Pattern',  '"Listen", "Established"', '|', 'Select-String', '-NotMatch', '-Pattern', '"127.0.0.1","0.0.0.0", "::"', ">", "netscan.csv"], cwd=str(work_dir.joinpath("dump/")))
+    
+    print("[*] Make zip\n")
+    subprocess.call(["powershell", "compress-archive", "-Force", str(work_dir.joinpath("dump/")) , str(work_dir.joinpath("dump.zip"))])
 
 ################################################
 

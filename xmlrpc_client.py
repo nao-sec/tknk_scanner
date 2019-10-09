@@ -14,7 +14,7 @@ import requests
 import magic
 import redis
 import socket
-import pefile
+import csv
 from pathlib import Path
 from pymongo import MongoClient
 from rq import get_current_job, Queue
@@ -97,6 +97,26 @@ def suricata(output_path, tcpdump_pid):
     os.remove("eve.json")
     return suricata_log
 
+def get_connections():
+    connections=[]
+    with open("result/dump/netscan.csv", 'r') as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        header = next(reader)
+
+        for row in reader:
+            if row[0] != "::" and row[0] != "0.0.0.0" and row[2] != "Listen" and row[2] != "Bound" and row[2] != "Idle" and row[3] != "0": 
+                connections.append({
+                    "remote_address":row[0],
+                    "remote_port":int(row[1]),
+                    "state":row[2],
+                    "pid":int(row[3]),
+                    "process_name":row[4],
+                    "path":row[5]
+                })
+    
+    return connections
+
 def analyze(uid):
 
     #db connect
@@ -114,7 +134,6 @@ def analyze(uid):
 
     #config read & write
     config = eval(r.get(uid).decode('utf-8'))
-    pe =  pefile.PE(config['path'])
     
     #make report format
     report = {
@@ -135,7 +154,7 @@ def analyze(uid):
             }
         },
         "results": {
-            "dump_files_scans":[],
+            "dump_files_scan":[],
             "upload_file_scan": {},
             "plugins":{
                 "avclass":[],
@@ -267,6 +286,10 @@ def analyze(uid):
             json.dump(report, outfile, indent=4)
         shutil.copyfile(config['path'], "result/"+str(uid)+"/"+config['target_file'])
 
+        #netscan
+        report['results']['plugins']['connections'] = get_connections()
+
+
         if SURICATA:
             suricata_log=suricata("result/"+str(uid), tcpdump_pid)
             report['results']['plugins']['suricata']=suricata_log
@@ -289,21 +312,23 @@ def analyze(uid):
         subprocess.run(['unzip', "dump.zip"], cwd="result") 
 
         p = Path("result/dump/")
-    
 
         for f in p.glob("**/*"):
             if (".exe" == f.suffix) or (".dll" == f.suffix) or (".shc" == f.suffix) or (".dmp" == f.suffix):
                 size = os.path.getsize(str(f))
                 matches = rules.match(str(f.resolve()))
-                report['dump_files_scans'].append({"detect_rule":list(map(str,matches)), "file_name":f.name, "size":size})
+                report['results']['dump_files_scan'].append({"detect_rule":list(map(str,matches)), "file_name":f.name, "size":size})
 
-    for scan in  report['dump_files_scans']:
+    for scan in  report['results']['dump_files_scan']:
         if scan["detect_rule"] != []:
             report["meta"]["is_matched"] = True
             report['meta']['detail'] = "Detected with yara rule!" 
             break
 
     shutil.copyfile(config['path'], "result/dump/"+config['target_file'])
+
+    #netscan
+    report['results']['plugins']['connections']  = get_connections()  
 
     if SURICATA:
         suricata_log=suricata("result/dump/", tcpdump_pid)
