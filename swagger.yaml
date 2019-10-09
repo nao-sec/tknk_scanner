@@ -268,7 +268,7 @@ components:
           type: boolean
           format: int32
           example: 1
-        detail:
+        comment:
           type: string
           example: "Detected with yara rule!"
         plugins:
@@ -309,6 +309,36 @@ components:
           $ref: "#/components/schemas/uploaded_file_scan_report"
         plugins:
           $ref: "#/components/schemas/plugins"
+        connections:
+          type: array
+          items:
+            $ref: "#/components/schemas/connection"
+    connection:
+      properties:
+        remote_address:
+          type: string
+          format: string
+          example: "1.1.1.1"
+        remote_port:
+          type: integer
+          format: int32
+          example: 80
+        state:
+          type: string
+          format: string
+          example: "Established"
+        pid:
+          type: integer
+          format: int32
+          example: 67892
+        process_name:
+          type: string
+          format: string
+          example: "firefox"
+        path:
+          type: string
+          format: string
+          example: "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
     dumped_files_scan_report:
       properties:
         detect_rules:
@@ -466,8 +496,6 @@ components:
           $ref: "#/components/schemas/dumped_files_scan_report"
         uploaded_file_scan_report:
           $ref: "#/components/schemas/uploaded_file_scan_report"
-    search_results:
-      properties:
         results:
           type: array
           items:
