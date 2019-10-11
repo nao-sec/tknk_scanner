@@ -172,6 +172,7 @@ def upload_file(arg, filename):
         return True
 
 def dump(config):
+    subprocess.call(["powershell", "Get-ChildItem -File", "|", "Set-ItemProperty", "-name", "isReadOnly", "-Value", "$true"])
     os.mkdir(str(work_dir.joinpath("dump/")))
     print(config)
 
@@ -188,12 +189,6 @@ def dump(config):
 
         EnumProcesses(ctypes.byref(ProcessIds), cb, ctypes.byref(BytesReturned))
         src_set = set(ProcessIds)
-
-    elif config["mode"] == "scylla":
-        print(config)
-        copy_file = config['target_file'].rsplit(".")[0]+"_copy.exe"
-        print(copy_file)
-        shutil.copyfile(str(work_dir.joinpath(config['target_file'])), copy_file)
 
     creation_flags = CREATE_NEW_CONSOLE 
     startupinfo         = STARTUPINFO()
@@ -251,7 +246,7 @@ def dump(config):
             subprocess.call(["procdump.exe", "-ma", str(pid), "/AcceptEula"], cwd=str(work_dir.joinpath("dump/")))
    
     print("[*] Get network connection info\n")
-    subprocess.call(['powershell', 'Get-NetTCPConnection', '|', 'Select-Object', '-Property', 'RemoteAddress, RemotePort, State, OwningProcess, { (Get-Process -Id $_.OwningProcess).Name}, {(Get-Process -Id $_.OwningProcess) | Select-Object -ExpandProperty Path}', '|', 'ConvertTo-Csv', '|', 'Select-String -Pattern',  '"Listen", "Established"', '|', 'Select-String', '-NotMatch', '-Pattern', '"127.0.0.1","0.0.0.0", "::"', ">", "netscan.csv"], cwd=str(work_dir.joinpath("dump/")))
+    subprocess.call(['powershell', 'Get-NetTCPConnection', '|', 'Select-Object', '-Property', 'RemoteAddress, RemotePort, State, OwningProcess, { (Get-Process -Id $_.OwningProcess).Name}, {(Get-Process -Id $_.OwningProcess) | Select-Object -ExpandProperty Path}', '|', 'Export-Csv', '-path', 'netscan.csv'], cwd=str(work_dir.joinpath("dump/")))
     
     print("[*] Make zip\n")
     subprocess.call(["powershell", "compress-archive", "-Force", str(work_dir.joinpath("dump/")) , str(work_dir.joinpath("dump.zip"))])
