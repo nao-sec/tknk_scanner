@@ -15,6 +15,7 @@ import magic
 import redis
 import socket
 import csv
+import re
 from pathlib import Path
 from pymongo import MongoClient
 from rq import get_current_job, Queue
@@ -97,6 +98,18 @@ def suricata(output_path, tcpdump_pid):
     os.remove("eve.json")
     return suricata_log
 
+def private_ip(ip):
+    regex = r"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^::1$)|(^[fF][cCdD])"
+    pattern = re.compile(regex)
+    match = pattern.match(ip)
+
+    if match == None:
+       return 0
+
+    return 1
+
+
+
 def get_connections():
     connections=[]
     with open("result/dump/netscan.csv", 'r') as f:
@@ -105,7 +118,7 @@ def get_connections():
         header = next(reader)
 
         for row in reader:
-            if row[0] != "::" and row[0] != "0.0.0.0" and row[2] != "Listen" and row[2] != "Bound" and row[2] != "Idle" and row[3] != "0": 
+            if row[0] != "::" and row[0] != "0.0.0.0" and row[2] != "Listen" and row[2] != "Bound" and row[2] != "Idle" and row[3] != "0" and private_ip(row[0]) == 0: 
                 connections.append({
                     "remote_address":row[0],
                     "remote_port":int(row[1]),
