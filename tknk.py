@@ -37,13 +37,17 @@ def start_analyze():
         return abort(404)
 
     uid = str(uuid.uuid4())
-    post = {}
+    post = {
+        "meta": {
+            "UUID":uid
+        }
+    }
 
     collection.insert_one(post)
 
     r.set(uid, str(requet_data))
 
-    job = q.enqueue(analyze, uid, job_id=uid, timeout=requet_data['time']+500)
+    job = q.enqueue(analyze, uid,  job_id=uid, timeout=requet_data['time']+500)
 
     return jsonify(status_code=0, UUID=uid, message="Submission Success!")
 
@@ -70,13 +74,12 @@ def file_upload():
 @app.route('/results/<uuid>')
 def show_result(uuid=None):
 
-    report = collection.find_one({u"UUID":uuid})
+    report = collection.find_one({u"meta.UUID":uuid})
     if report == None:
         return abort(404)
-
     report.pop('_id')
-    
-    if  report['result']['is_success'] is not None:
+
+    if 1 < len(report['meta']):
         return jsonify(status_code=0, report=report)
     else:
         return make_response(jsonify(status_code=1, message='Analysing...'), 206)
@@ -155,9 +158,9 @@ def search(search_type=None, value=None):
 
     search_results=[]
 
-    result = collection.find({"target_scan."+search_type:value})
+    report = collection.find({"target_scan."+search_type:value})
 
-    results = list(result)
+    results = list(report)
 
     for r in results:
         r.pop('_id')

@@ -108,8 +108,6 @@ def private_ip(ip):
 
     return 1
 
-
-
 def get_connections():
     connections=[]
     with open("result/dump/netscan.csv", 'r') as f:
@@ -216,7 +214,7 @@ def analyze(uid):
    
     if "DLL" in report['results']['upload_file_scan']['magic']:
         report["meta"]["detail"] = "In the case of a DLL, only uploaded files is scanned."
-        collection.update({u'UUID':uid},report)
+        collection.update({u'meta.UUID':uid},report)
         current_job_init(r)
         os._exit(0)
 
@@ -230,14 +228,14 @@ def analyze(uid):
     if "busy" in output:
         print("failed to initialize KVM: Device or resource busy")
         report['meta']['detail'] = "failed to initialize KVM: Device or resource busy"
-        collection.update({u'UUID':uid},report)
+        collection.update({u'meta.UUID':uid},report)
         current_job_init(r)
         os._exit(0)
         
     elif "Domain" in output:
         print("Domain snapshot not found: the domain does not have a current snapshot")
         report['meta']['detail'] = "Domain snapshot not found: the domain does not have a current snapshot"
-        collection.update({u'UUID':uid},report)
+        collection.update({u'meta.UUID':uid},report)
         current_job_init(r)
         os._exit(0)
 
@@ -307,9 +305,8 @@ def analyze(uid):
             suricata_log=suricata("result/"+str(uid), tcpdump_pid)
             report['results']['plugins']['suricata']=suricata_log
         
-        collection.update({u'UUID':uid},report)
         print (json.dumps(report, indent=4))
-        collection.update({u'UUID':uid},report)
+        collection.update({u'meta.UUID':uid},report)
         current_job_init(r)
 
         os.remove("dump.zip")
@@ -350,7 +347,7 @@ def analyze(uid):
     with open("result/dump/"+file_sha256+'.json', 'w') as outfile:
         json.dump(report, outfile, indent=4)
     print (json.dumps(report, indent=4))
-    collection.update({u'UUID':uid},report)
+    collection.update({u'meta.UUID':uid},report)
     current_job_init(r)
 
     os.rename("result/dump", "result/"+str(uid))
