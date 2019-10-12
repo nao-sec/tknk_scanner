@@ -164,7 +164,7 @@ def analyze(uid):
                 "suricata":SURICATA
             }
         },
-        "results": {
+        "result": {
             "dump_files_scan":[],
             "upload_file_scan": {},
             "plugins":{
@@ -177,15 +177,15 @@ def analyze(uid):
 
     #avclass
     if AVCLASS:
-        report['results']['plugins']['avclass'] = run_avclass(VT_KEY, file_sha256)
+        report['result']['plugins']['avclass'] = run_avclass(VT_KEY, file_sha256)
 
     #Detect it easy
     if DIE:
         cmd=["die/diec.sh", config['path'], "-deepscan:yes", "-showentropy:yes"]
         p = subprocess.run(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-        report['results']['plugins']['die'] = p.stdout.decode("utf8").split("\n")
-        if report['results']['plugins']['die'] != []:
-            report['results']['plugins']['die'].pop()
+        report['result']['plugins']['die'] = p.stdout.decode("utf8").split("\n")
+        if report['result']['plugins']['die'] != []:
+            report['result']['plugins']['die'].pop()
 
     #load yara rules
     rules = yara.compile('index.yar')
@@ -199,7 +199,7 @@ def analyze(uid):
         file_sha1 = str(hashlib.sha1(d).hexdigest())
         file_sha256 = str(hashlib.sha256(d).hexdigest())
         
-    report['results']['upload_file_scan']={
+    report['result']['upload_file_scan']={
         "md5":file_md5, 
         "sha1":file_sha1, 
         "sha256":file_sha256, 
@@ -209,10 +209,10 @@ def analyze(uid):
         "magic":magic.from_file(config['path'])
         }
   
-    if report['results']['upload_file_scan']['detect_rule']!=[]:
+    if report['result']['upload_file_scan']['detect_rule']!=[]:
         report["meta"]["is_matched"] = True
    
-    if "DLL" in report['results']['upload_file_scan']['magic']:
+    if "DLL" in report['result']['upload_file_scan']['magic']:
         report["meta"]["detail"] = "In the case of a DLL, only uploaded files is scanned."
         collection.update({u'meta.UUID':uid},report)
         current_job_init(r)
@@ -298,12 +298,12 @@ def analyze(uid):
         shutil.copyfile(config['path'], "result/"+str(uid)+"/"+config['target_file'])
 
         #netscan
-        report['results']['plugins']['connections'] = get_connections()
+        report['result']['plugins']['connections'] = get_connections()
 
 
         if SURICATA:
             suricata_log=suricata("result/"+str(uid), tcpdump_pid)
-            report['results']['plugins']['suricata']=suricata_log
+            report['result']['plugins']['suricata']=suricata_log
         
         print (json.dumps(report, indent=4))
         collection.update({u'meta.UUID':uid},report)
@@ -327,9 +327,9 @@ def analyze(uid):
             if (".exe" == f.suffix) or (".dll" == f.suffix) or (".shc" == f.suffix) or (".dmp" == f.suffix):
                 size = os.path.getsize(str(f))
                 matches = rules.match(str(f.resolve()))
-                report['results']['dump_files_scan'].append({"detect_rule":list(map(str,matches)), "file_name":f.name, "size":size})
+                report['result']['dump_files_scan'].append({"detect_rule":list(map(str,matches)), "file_name":f.name, "size":size, "magic":magic.from_file(str(f.resolve()))})
 
-    for scan in  report['results']['dump_files_scan']:
+    for scan in  report['result']['dump_files_scan']:
         if scan["detect_rule"] != []:
             report["meta"]["is_matched"] = True
             report['meta']['detail'] = "Detected with yara rule!" 
@@ -338,11 +338,11 @@ def analyze(uid):
     shutil.copyfile(config['path'], "result/dump/"+config['target_file'])
 
     #netscan
-    report['results']['plugins']['connections']  = get_connections()  
+    report['result']['plugins']['connections']  = get_connections()  
 
     if SURICATA:
         suricata_log=suricata("result/dump/", tcpdump_pid)
-        report['results']['plugins']['suricata']=suricata_log
+        report['result']['plugins']['suricata']=suricata_log
 
     with open("result/dump/"+file_sha256+'.json', 'w') as outfile:
         json.dump(report, outfile, indent=4)

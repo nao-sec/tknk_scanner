@@ -108,11 +108,13 @@ def get_yara_file(rule_name=None):
 def page(page_num=None):
     page=[]
     page_num = int(page_num)
-    line_num = 50.0
+    line_num = 30.0
     page_size= math.ceil(len(list(collection.find()))/line_num)
     page_item = collection.find().sort('timestamp',-1).limit(int(line_num)).skip((page_num-1)*int(line_num))
     for p in page_item:
         p.pop('_id')
+        p.pop(p['result']['plugins'])
+        p.pop(p['result']['connections'])
         page.append(p)
     return jsonify(status_code=0, page=page, page_size=page_size)
 
