@@ -71,7 +71,7 @@ def file_upload():
 
     return jsonify(status_code=0, path=UPLOAD_FOLDER+filename)
 
-@app.route('/results/<uuid>')
+@app.route('/result/<uuid>')
 def show_result(uuid=None):
 
     report = collection.find_one({u"meta.UUID":uuid})
@@ -112,10 +112,15 @@ def page(page_num=None):
     page_size= math.ceil(len(list(collection.find()))/line_num)
     page_item = collection.find().sort('timestamp',-1).limit(int(line_num)).skip((page_num-1)*int(line_num))
     for p in page_item:
-        p.pop('_id')
-        p.pop(p['result']['plugins'])
-        p.pop(p['result']['connections'])
-        page.append(p)
+        detect_rules = p['result']['upload_file_scan']['detect_rules']
+        for dumped_file in p['result']['dumped_file_scan']:
+            detect_rules.extend(dumped_file['detect_rules'])
+        detect_rules = list(set(detect_rules))
+        new_page_item = {
+            "meta":p['meta'],
+            "detect_rules_sumarry":detect_rules
+        }
+        page.append(new_page_item)
     return jsonify(status_code=0, page=page, page_size=page_size)
 
 @app.route('/jobs')
