@@ -17,21 +17,86 @@ import socket
 import csv
 import re
 from pathlib import Path
+from pathlib import PureWindowsPath
 from pymongo import MongoClient
 from rq import get_current_job, Queue
 from read_avclass_report import run_avclass
 from redis import Redis
 import configparser
+from minidump.minidumpfile import MinidumpFile
 
 conf = configparser.ConfigParser()
 conf.read('tknk.conf', 'UTF-8')
 
-VM_NAME=conf.get('settings','vm_name')
-VM_URL=conf.get('settings','vm_url')
+VM_NAME=conf.get('setting','vm_name')
+VM_URL=conf.get('setting','vm_url')
 AVCLASS=conf.getboolean('plugin','avclass')
 DIE=conf.getboolean('plugin','die')
 SURICATA=conf.getboolean('plugin','suricata')
 VT_KEY=conf.get('plugin','vt_key')
+
+
+
+def memory_dump(memory_infos, mf, *name):
+    mf_reader = mf.get_reader()
+    data=b""
+
+    for memory_info in memory_infos:
+        buff_reader = mf_reader.get_buffered_reader()
+        buff_reader.move(int(memory_info[0],16))
+        data += buff_reader.peek(int(memory_info[3],16)-1)
+    
+    for memory_info in memory_infos:
+        if len(memory_infos) == 1:
+            if name != ():
+                print(PureWindowsPath(name[0]).name)
+                with open("result/dump/"+PureWindowsPath(name[0]).name+"_"+memory_info[0]+"_"+str(hex(int(memory_info[2])))+"_"+memory_info[4]+"_"+memory_info[5]+".dmp", 'wb')  as f:
+                    f.write(data)
+            else:
+                with open("result/dump/"+memory_info[0]+"_"+str(hex(int(memory_info[2])))+"_"+memory_info[4]+"_"+memory_info[5]+".dmp", 'wb')  as f:
+                    f.write(data)
+        
+        if 1 < len(memory_infos):
+            if name != ():
+                with open("result/dump/"+PureWindowsPath(name[0]).name+"_"+memory_info[1]+"_"+str(hex(int(memory_info[2])))+".dmp", 'wb')  as f:
+                    f.write(data)
+            else:
+                with open("result/dump/"+memory_info[1]+"_"+str(hex(int(memory_info[2])))+"_"+memory_info[6]+".dmp", 'wb')  as f:
+                    f.write(data)
+        break
+
+def parse_procdump(procdump):
+    mf = MinidumpFile.parse(procdump)
+    modules=mf.modules.to_table()
+
+    memory_infos = mf.memory_info.to_table()
+    dlls=[]
+    exe_names={}
+    dump_memory_infos={}
+
+    for memory_info in memory_infos[1:]:
+        if memory_info[5] != "N/A" and memory_info[5]  != "PAGE_NOACCESS":
+            #print(memory_info)
+            for module in modules[1:]:
+                if int(module[1], 16) == int(memory_info[1], 16):
+                    if ".exe" in module[0]:
+                        exe_names.update({memory_info[0]:module[0]})
+                    else:
+                        dlls.append(memory_info[0])
+            if memory_info[0] not in dlls:
+                if memory_info[1] not in dump_memory_infos:
+                    dump_memory_infos[memory_info[1]]=[memory_info]
+                else:
+                    dump_memory_infos[memory_info[1]].append(memory_info)
+
+    for i in dump_memory_infos:
+        for dump_memory_info in dump_memory_infos[i]:
+            if dump_memory_info[0] in exe_names:
+                memory_dump(dump_memory_infos[i], mf, exe_names[dump_memory_info[0]])
+                break
+            else:
+                memory_dump(dump_memory_infos[i], mf)
+                break
 
 def download():
     proxy = xmlrpc.client.ServerProxy(VM_URL)
@@ -151,7 +216,7 @@ def analyze(uid):
         "meta": {
             "UUID":uid,
             "timestamp":str(datetime.datetime.utcnow().isoformat()),
-            "settings": {
+            "setting": {
                 "mode":config['mode'],
                 "run_time":config['time']
             },    
@@ -281,7 +346,7 @@ def analyze(uid):
             dump_success = True
         else:
             dump_success = False
-            if report['meta']['settings']['mode'] == "procdump":
+            if report['meta']['setting']['mode'] == "procdump":
                 report['meta']['detail'] = "Process does not exist" 
             else:
                 report['meta']['detail'] = "Dump file does not exist" 
@@ -313,6 +378,8 @@ def analyze(uid):
         os._exit(0)
 
     elif dump_success == True:
+        if os.path.exists("result/dump"):
+            shutil.rmtree("result/dump")
         report['meta']['is_dumped']=dump_success
         p = Path("result/dump.zip")
         if p.exists():
@@ -322,6 +389,13 @@ def analyze(uid):
         subprocess.run(['unzip', "dump.zip"], cwd="result") 
 
         p = Path("result/dump/")
+
+        if report['meta']['setting']['mode'] == "procdump":
+            procdump_file = list(p.glob("*.dmp"))
+            print(procdump_file)
+            procdump_file_name = str(procdump_file[0].resolve())
+            print(procdump_file_name)
+            parse_procdump(procdump_file_name)
 
         for f in p.glob("**/*"):
             if (".exe" == f.suffix) or (".dll" == f.suffix) or (".shc" == f.suffix) or (".dmp" == f.suffix):
