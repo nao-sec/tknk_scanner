@@ -77,7 +77,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /results/{UUID}:  
+  /result/{UUID}:  
     get:
       tags:
         - results
@@ -197,7 +197,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/search_results"
+                $ref: "#/components/schemas/report_summary"  
         '404':
           description: unexpected error
           content:
@@ -377,6 +377,9 @@ components:
         size:
           type: string
           example: "86.0KB"
+        magic:
+          type: string
+          example: "PE32 executable (GUI) Intel 80386, for MS Windows"    
     plugins:
       properties:
         avclass_key:
@@ -487,19 +490,16 @@ components:
           example: 1
     report_summary:
       properties:
-        UUID:
-          type: string
-          example: "41ad0e99-f982-4355-abf9-b6a85078efc4"
         meta:
           $ref: "#/components/schemas/meta"
-        dumped_files_scan_report:
-          $ref: "#/components/schemas/dumped_files_scan_report"
-        uploaded_file_scan_report:
-          $ref: "#/components/schemas/uploaded_file_scan_report"
-        results:
+        detect_rules_summary:
           type: array
           items:
-            $ref: "#/components/schemas/report_summary"
+            $ref: "#/components/schemas/detect_rules_summary"
+    detect_rules_summary:
+      type: string
+      example: "nymaimr
+    
     jobs:
       properties:
         current_job:
@@ -563,4 +563,3 @@ components:
           example: 2
         message:
           type: string
-        
