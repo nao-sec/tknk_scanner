@@ -106,22 +106,22 @@ def get_yara_file(rule_name=None):
 
 @app.route('/page/<page_num>')
 def page(page_num=None):
-    page=[]
+    reports=[]
     page_num = int(page_num)
     line_num = 30.0
     page_size= math.ceil(len(list(collection.find()))/line_num)
     page_item = collection.find().sort('timestamp',-1).limit(int(line_num)).skip((page_num-1)*int(line_num))
     for p in page_item:
-        detect_rules = p['result']['upload_file_scan']['detect_rules']
+        detect_rules = p['result']['uploaded_file_scan']['detect_rules']
         for dumped_file in p['result']['dumped_file_scan']:
             detect_rules.extend(dumped_file['detect_rules'])
         detect_rules = list(set(detect_rules))
         new_page_item = {
             "meta":p['meta'],
-            "detect_rules_sumarry":detect_rules
+            "detect_rules_summary":detect_rules
         }
-        page.append(new_page_item)
-    return jsonify(status_code=0, page=page, page_size=page_size)
+        reports.append(new_page_item)
+    return jsonify(status_code=0, reports=page, page_size=page_size)
 
 @app.route('/jobs')
 def job_ids():
@@ -159,19 +159,24 @@ def download(uuid=None):
 
 @app.route('/search/<search_type>/<value>')    
 def search(search_type=None, value=None):
-
     if search_type != "md5" and search_type != "sha1" and search_type != "sha256":
         return abort(404)
-
     search_results=[]
 
-    report = collection.find({"target_scan."+search_type:value})
+    report = collection.find({"result.uploaded_file_scan."+search_type:value})
 
     results = list(report)
 
     for r in results:
-        r.pop('_id')
-        search_results.append(r)
+        detect_rules = r['result']['uploaded_file_scan']['detect_rules']
+        for dumped_file in r['result']['dumped_file_scan']:
+            detect_rules.extend(dumped_file['detect_rules'])
+        detect_rules = list(set(detect_rules))
+        new_page_item = {
+            "meta":r['meta'],
+            "detect_rules_summary":detect_rules
+        }
+        search_results.append(new_page_item)
 
     if len(search_results) == 0:
         abort(404)

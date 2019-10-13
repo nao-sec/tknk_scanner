@@ -229,7 +229,7 @@ def analyze(uid):
         },
         "result": {
             "dumped_file_scan":[],
-            "upload_file_scan": {},
+            "uploaded_file_scan": {},
             "plugins":{
                 "avclass":[],
                 "die": [],
@@ -262,7 +262,7 @@ def analyze(uid):
         file_sha1 = str(hashlib.sha1(d).hexdigest())
         file_sha256 = str(hashlib.sha256(d).hexdigest())
         
-    report['result']['upload_file_scan']={
+    report['result']['uploaded_file_scan']={
         "md5":file_md5, 
         "sha1":file_sha1, 
         "sha256":file_sha256, 
@@ -272,10 +272,10 @@ def analyze(uid):
         "magic":magic.from_file(config['path'])
         }
   
-    if report['result']['upload_file_scan']['detect_rules']!=[]:
+    if report['result']['uploaded_file_scan']['detect_rules']!=[]:
         report["meta"]["is_matched"] = True
    
-    if "DLL" in report['result']['upload_file_scan']['magic']:
+    if "DLL" in report['result']['uploaded_file_scan']['magic']:
         report["meta"]["detail"] = "In the case of a DLL, only uploaded files is scanned."
         collection.update({u'meta.UUID':uid},report)
         current_job_init(r)
