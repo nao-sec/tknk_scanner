@@ -49,7 +49,6 @@ def memory_dump(memory_infos, mf, *name):
     for memory_info in memory_infos:
         if len(memory_infos) == 1:
             if name != ():
-                print(PureWindowsPath(name[0]).name)
                 with open("result/dump/"+PureWindowsPath(name[0]).name+"_"+memory_info[0]+"_"+str(hex(int(memory_info[2])))+"_"+memory_info[4]+"_"+memory_info[5]+".dmp", 'wb')  as f:
                     f.write(data)
             else:
@@ -76,7 +75,6 @@ def parse_procdump(procdump):
 
     for memory_info in memory_infos[1:]:
         if memory_info[5] != "N/A" and memory_info[5]  != "PAGE_NOACCESS":
-            #print(memory_info)
             for module in modules[1:]:
                 if int(module[1], 16) == int(memory_info[1], 16):
                     if ".exe" in module[0]:
@@ -230,7 +228,7 @@ def analyze(uid):
             }
         },
         "result": {
-            "dump_files_scan":[],
+            "dumped_file_scan":[],
             "upload_file_scan": {},
             "plugins":{
                 "avclass":[],
@@ -268,13 +266,13 @@ def analyze(uid):
         "md5":file_md5, 
         "sha1":file_sha1, 
         "sha256":file_sha256, 
-        "detect_rule":list(map(str,matches)), 
+        "detect_rules":list(map(str,matches)), 
         "file_name":config['target_file'], 
         "size":os.path.getsize(config['path']),
         "magic":magic.from_file(config['path'])
         }
   
-    if report['result']['upload_file_scan']['detect_rule']!=[]:
+    if report['result']['upload_file_scan']['detect_rules']!=[]:
         report["meta"]["is_matched"] = True
    
     if "DLL" in report['result']['upload_file_scan']['magic']:
@@ -392,19 +390,17 @@ def analyze(uid):
 
         if report['meta']['setting']['mode'] == "procdump":
             procdump_file = list(p.glob("*.dmp"))
-            print(procdump_file)
             procdump_file_name = str(procdump_file[0].resolve())
-            print(procdump_file_name)
             parse_procdump(procdump_file_name)
 
         for f in p.glob("**/*"):
             if (".exe" == f.suffix) or (".dll" == f.suffix) or (".shc" == f.suffix) or (".dmp" == f.suffix):
                 size = os.path.getsize(str(f))
                 matches = rules.match(str(f.resolve()))
-                report['result']['dump_files_scan'].append({"detect_rule":list(map(str,matches)), "file_name":f.name, "size":size, "magic":magic.from_file(str(f.resolve()))})
+                report['result']['dumped_file_scan'].append({"detect_rules":list(map(str,matches)), "file_name":f.name, "size":size, "magic":magic.from_file(str(f.resolve()))})
 
-    for scan in  report['result']['dump_files_scan']:
-        if scan["detect_rule"] != []:
+    for scan in  report['result']['dumped_file_scan']:
+        if scan["detect_rules"] != []:
             report["meta"]["is_matched"] = True
             report['meta']['detail'] = "Detected with yara rule!" 
             break
