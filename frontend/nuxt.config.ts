@@ -1,9 +1,9 @@
-import NuxtConfiguration from "@nuxt/config"
+import { Configuration } from "@nuxt/types"
 import { config as dConfig } from "dotenv"
 
 dConfig()
 
-const config: NuxtConfiguration = {
+const config: Configuration = {
   mode: "spa",
   head: {
     title: "tknk_Scanner",
@@ -28,6 +28,7 @@ const config: NuxtConfiguration = {
    ** Build configuration
    */
   build: {
+    transpile: [/nuxt-typed-vuex/],
     /*
      ** Run ESLint on save
      */
@@ -46,8 +47,17 @@ const config: NuxtConfiguration = {
       }
     },
   },
+  buildModules: ["@nuxt/typescript-build", "nuxt-typed-vuex"],
+  typescript: {
+    typeCheck: true,
+    ignoreNotFoundWarnings: true,
+  },
   modules: ["@nuxtjs/axios", "bootstrap-vue/nuxt", "@nuxtjs/proxy"],
-  plugins: ["~plugins/vue-clipboard2", "~plugins/fontawesome"],
+  plugins: [
+    "~plugins/vue-clipboard2",
+    "~plugins/fontawesome",
+    "@/plugins/composition-api",
+  ],
   axios: {
     baseURL: "/api",
   },

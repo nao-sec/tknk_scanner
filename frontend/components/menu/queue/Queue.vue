@@ -12,11 +12,16 @@
     </b-navbar-nav>
   </div>
 </template>
-<script>
+<script lang="ts">
 import { mapState, mapMutations } from "vuex"
+import { computed, createComponent, reactive } from "@vue/composition-api"
 
-export default {
+export default createComponent({
   name: "Queue",
+  setup() {
+    // computed
+    const current_length = computed(() => this.jobs.current !== null ? 1 : 0)
+  },
   data() {
     return {
       paused: false,
@@ -67,7 +72,7 @@ export default {
       push_queued_jobs: "jobs/push_queued_jobs",
     }),
   },
-}
+})
 </script>
 
 <style lang="stylus" scoped>

@@ -20,6 +20,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "error",
     "no-console": "off",
     "vue/max-attributes-per-line": "off",
-    "prettier/prettier": ["error", { "semi": false }]
+    "prettier/prettier": ["error", { "semi": false }],
+    "camelcase": "off"
   }
 }
