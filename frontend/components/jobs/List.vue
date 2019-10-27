@@ -23,7 +23,7 @@ import JobStatus from "~/components/jobs/JobStatus"
 export default class List extends Vue {
   // props
   @Prop({ type: [Object] })
-  jobs: object[] = [{}]
+  jobs: Job[] = []
 
   get items() {
     return this.jobs.map(o => {
