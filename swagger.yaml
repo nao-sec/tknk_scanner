@@ -44,7 +44,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/upload_response"
+                $ref: "#/components/schemas/upload_status"
         '404':
           description: "something wrong"
           content:
@@ -77,7 +77,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /results/{UUID}:  
+  /result/{UUID}:  
     get:
       tags:
         - results
@@ -95,7 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/result_response"
+                $ref: "#/components/schemas/report_response"
         404:
           description: unexpected error
           content:
@@ -137,7 +137,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/page"
+                $ref: "#/components/schemas/recent_reports"
         '404':
           description: unexpected error
           content:
@@ -197,13 +197,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/search_results"
+                $ref: "#/components/schemas/report_summary"  
         '404':
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"  
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     conf:
@@ -222,7 +222,7 @@ components:
           type: integer
           format: int32
           example: 20
-    upload_response:
+    upload_status:
       properties:
         status_code:
           type: integer
@@ -231,7 +231,7 @@ components:
         path:
           type: string
           example: "target/hoge.exe"
-    result_response:
+    report_response:
       type: object
       required:
         - status_code
@@ -247,8 +247,8 @@ components:
       properties:
         meta:
           $ref: "#/components/schemas/meta"
-        results:
-          $ref: "#/components/schemas/results"
+        result:
+          $ref: "#/components/schemas/result"
     meta:
       type: object
       properties:
@@ -258,8 +258,8 @@ components:
         timestamp:
           type: string
           example: "2018-11-23T20:42:23.749302"
-        settings:
-          $ref: "#/components/schemas/settings"
+        setting:
+          $ref: "#/components/schemas/setting"
         is_dumped:
           type: boolean
           format: int32
@@ -268,12 +268,12 @@ components:
           type: boolean
           format: int32
           example: 1
-        detail:
+        comment:
           type: string
           example: "Detected with yara rule!"
         plugins:
           $ref: "#/components/schemas/plugins_conf"
-    settings:
+    setting:
       type: object
       properties:
         mode:
@@ -298,20 +298,50 @@ components:
           type: boolean
           format: int32
           example: 1
-    results:
+    result:
       type: object
       properties:
-        dump_files_scans:
+        dump_files_scan:
           type: array
           items:
-            $ref: "#/components/schemas/dump_files_scans"
+            $ref: "#/components/schemas/dumped_files_scan_report"
         upload_file_scan:
-          $ref: "#/components/schemas/upload_file_scan"
+          $ref: "#/components/schemas/uploaded_file_scan_report"
         plugins:
           $ref: "#/components/schemas/plugins"
-    dump_files_scans:
+        connections:
+          type: array
+          items:
+            $ref: "#/components/schemas/connection"
+    connection:
       properties:
-        detect_rule:
+        remote_address:
+          type: string
+          format: string
+          example: "1.1.1.1"
+        remote_port:
+          type: integer
+          format: int32
+          example: 80
+        state:
+          type: string
+          format: string
+          example: "Established"
+        pid:
+          type: integer
+          format: int32
+          example: 67892
+        process_name:
+          type: string
+          format: string
+          example: "firefox"
+        path:
+          type: string
+          format: string
+          example: "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
+    dumped_files_scan_report:
+      properties:
+        detect_rules:
           type: array
           items:
             type: string
@@ -325,7 +355,7 @@ components:
         magic:
           type: string
           example: "PE32 executable (GUI) Intel 80386, for MS Windows"
-    upload_file_scan:
+    uploaded_file_scan_report:
       properties:
         md5:
           type: string    
@@ -336,7 +366,7 @@ components:
         sha256:
           type: string
           example: "27c064b345343c9d3152164b8ea0f777e71ce9c4bd7b79ae39fd716533dd8b49"
-        detect_rule:
+        detect_rules:
           type: array
           items:
             type: string
@@ -347,6 +377,9 @@ components:
         size:
           type: string
           example: "86.0KB"
+        magic:
+          type: string
+          example: "PE32 executable (GUI) Intel 80386, for MS Windows"    
     plugins:
       properties:
         avclass_key:
@@ -365,11 +398,11 @@ components:
           type: integer
           format: int32
           example: 1
-        data:
+        detects:
           type: array
           items:
-            $ref: "#/components/schemas/data"
-    data:
+            $ref: "#/components/schemas/detect"
+    detect:
       properties:
         family_name:
           type: string
@@ -380,11 +413,11 @@ components:
           example: 2
     suricata:
       properties:
-        alert_list:
+        events:
           type: array
           items:
-            $ref: "#/components/schemas/alert_list"
-    alert_list:
+            $ref: "#/components/schemas/event"
+    event:
       type: object
       properties:
         event_type:
@@ -445,44 +478,43 @@ components:
             url:
               type: string
               example: "/V1/five/fre.php"
-    page:
+    recent_reports:
       properties:
-        page:
+        reports:
           type: array
           items:
-            $ref: "#/components/schemas/report"
+            $ref: "#/components/schemas/report_summary"
         page_size:
           type: integer
           format: int32
           example: 1
-    search_results:
+    report_summary:
       properties:
-        results:
+        meta:
+          $ref: "#/components/schemas/meta"
+        detect_rules_summary:
           type: array
           items:
-            $ref: "#/components/schemas/report"
+            $ref: "#/components/schemas/detect_rules_summary"
+    detect_rules_summary:
+      type: string
+      example: "nymaimr
+    
     jobs:
       properties:
         current_job:
-          $ref: "#/components/schemas/current_job"
+          $ref: "#/components/schemas/job"
         queued_jobs:
           type: array
           items:
-            $ref: "#/components/schemas/queued_jobs"     
-    current_job:
+            $ref: "#/components/schemas/job"     
+    job:
       properties:
         config:
             $ref: "#/components/schemas/job_conf"  
         id:
           type: string
           example: "de9e01a2-7603-4098-8503-e82742a4b2c1"
-    queued_jobs:
-      properties:
-        config:
-          $ref: "#/components/schemas/job_conf"
-        id:
-          type: string
-          example: "f5f5f39d-6421-4824-b724-e532704b1d83"
     job_conf:
       properties:
         target_file:

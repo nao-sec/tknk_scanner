@@ -172,6 +172,7 @@ def upload_file(arg, filename):
         return True
 
 def dump(config):
+    subprocess.call(["powershell", "Get-ChildItem -File", "|", "Set-ItemProperty", "-name", "isReadOnly", "-Value", "$true"])
     os.mkdir(str(work_dir.joinpath("dump/")))
     print(config)
 
@@ -188,12 +189,6 @@ def dump(config):
 
         EnumProcesses(ctypes.byref(ProcessIds), cb, ctypes.byref(BytesReturned))
         src_set = set(ProcessIds)
-
-    elif config["mode"] == "scylla":
-        print(config)
-        copy_file = config['target_file'].rsplit(".")[0]+"_copy.exe"
-        print(copy_file)
-        shutil.copyfile(str(work_dir.joinpath(config['target_file'])), copy_file)
 
     creation_flags = CREATE_NEW_CONSOLE 
     startupinfo         = STARTUPINFO()
@@ -231,7 +226,7 @@ def dump(config):
         print(("[*] wait for dump %d seconds\n") % config["time"])   
         time.sleep(config["time"])
 
-    print("[*] dumping\n")
+    print("[*] Dumping\n")
 
     if config["mode"] == "hollows_hunter":
         SuspendProcess(PID)
@@ -250,12 +245,11 @@ def dump(config):
         for pid in new_ProcessIds:
             subprocess.call(["procdump.exe", "-ma", str(pid), "/AcceptEula"], cwd=str(work_dir.joinpath("dump/")))
    
-    elif config["mode"] == "scylla":
-        SuspendProcess(PID)
-        scylla_dump(PID, copy_file, config['entrypoint'])
-
-    print("[*] make zip\n")
-    subprocess.call(['powershell', "compress-archive", "-Force", str(work_dir.joinpath("dump/")) , str(work_dir.joinpath("dump.zip"))])
+    print("[*] Get network connection info\n")
+    subprocess.call(['powershell', 'Get-NetTCPConnection', '|', 'Select-Object', '-Property', 'RemoteAddress, RemotePort, State, OwningProcess, { (Get-Process -Id $_.OwningProcess).Name}, {(Get-Process -Id $_.OwningProcess) | Select-Object -ExpandProperty Path}', '|', 'Export-Csv', '-path', 'netscan.csv'], cwd=str(work_dir.joinpath("dump/")))
+    
+    print("[*] Make zip\n")
+    subprocess.call(["powershell", "compress-archive", "-Force", str(work_dir.joinpath("dump/")) , str(work_dir.joinpath("dump.zip"))])
 
 ################################################
 
