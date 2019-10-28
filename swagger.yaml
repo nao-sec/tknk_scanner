@@ -382,7 +382,7 @@ components:
           example: "PE32 executable (GUI) Intel 80386, for MS Windows"    
     plugins:
       properties:
-        avclass_key:
+        avclass:
           $ref: "#/components/schemas/avclass"
         die:
           type: string
@@ -498,7 +498,7 @@ components:
             $ref: "#/components/schemas/detect_rules_summary"
     detect_rules_summary:
       type: string
-      example: "nymaimr
+      example: "nymaimr"
     
     jobs:
       properties:
