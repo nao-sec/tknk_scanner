@@ -14,9 +14,7 @@
       </b-badge>
     </template>
     <template slot="uuid" slot-scope="data">
-      <nuxt-link
-        :to="{ name: 'results-resultid', params: { resultid: data.value } }"
-      >
+      <nuxt-link :to="{ name: 'results-resultid', params: { resultid: data.value } }">
         Result
       </nuxt-link>
     </template>
@@ -49,21 +47,13 @@ export default {
       return this.items.map(report => {
         let detectRules = []
 
-        if (
-          report.scans !== null &&
-          report.scans !== undefined &&
-          report.scans.length !== 0
-        ) {
+        if (report.scans !== null && report.scans !== undefined && report.scans.length !== 0) {
           report.scans.forEach(scan => {
             detectRules = detectRules.concat(scan.detect_rule)
           })
         }
 
-        if (
-          report.target_scan !== null &&
-          report.target_scan !== undefined &&
-          report.target_scan.detect_rule.length !== 0
-        ) {
+        if (report.target_scan !== null && report.target_scan !== undefined && report.target_scan.detect_rule.length !== 0) {
           detectRules = detectRules.concat(report.target_scan.detect_rule)
         }
 
@@ -71,24 +61,12 @@ export default {
         detectRules = Array.from(new Set(detectRules))
 
         return {
-          file_name:
-            report.target_scan === undefined || report.target_scan === null
-              ? null
-              : report.target_scan.file_name,
+          file_name: report.target_scan === undefined || report.target_scan === null ? null : report.target_scan.file_name,
           mode: report.mode,
-          run_time:
-            report.run_time === null || report.run_time === undefined
-              ? null
-              : parseInt(report.run_time, 10),
+          run_time: report.run_time === null || report.run_time === undefined ? null : parseInt(report.run_time, 10),
           detect_rules: detectRules,
-          size:
-            report.target_scan === undefined || report.target_scan === null
-              ? null
-              : report.target_scan.size,
-          is_in_vt:
-            report.avclass === undefined || report.avclass === null
-              ? false
-              : report.avclass.flag,
+          size: report.target_scan === undefined || report.target_scan === null ? null : report.target_scan.size,
+          is_in_vt: report.avclass === undefined || report.avclass === null ? false : report.avclass.flag,
           timestamp: report.timestamp,
           uuid: report.UUID,
         }

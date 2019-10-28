@@ -6,51 +6,19 @@
           {{ error_message }}
         </p>
       </div>
-      <b-btn
-        class="mt-3"
-        variant="outline-danger"
-        block
-        @click="close_error_modal"
-      >
+      <b-btn class="mt-3" variant="outline-danger" block @click="close_error_modal">
         Close
       </b-btn>
     </b-modal>
     <b-form v-if="show" @submit="upload">
-      <b-form-group
-        id="upload-file"
-        label="File:"
-        label-for="uploadFileInput"
-        description="accept only PE binary"
-      >
-        <b-form-file
-          id="uploadFileInput"
-          v-model="form.file"
-          :state="Boolean(form.file)"
-          placeholder="Select file"
-          required
-        />
+      <b-form-group id="upload-file" label="File:" label-for="uploadFileInput" description="accept only PE binary">
+        <b-form-file id="uploadFileInput" v-model="form.file" :state="Boolean(form.file)" placeholder="Select file" required />
       </b-form-group>
-      <b-form-group
-        id="scan-mode"
-        label="Scan Mode:"
-        label-for="scanModeSelect"
-        description="select dump tool"
-      >
-        <b-form-select
-          v-model="form.mode"
-          :options="scan_mode"
-          placeholder="Select running mode"
-          required
-        />
+      <b-form-group id="scan-mode" label="Scan Mode:" label-for="scanModeSelect" description="select dump tool">
+        <b-form-select v-model="form.mode" :options="scan_mode" placeholder="Select running mode" required />
       </b-form-group>
       <b-form-group id="time-input" label="Running Time:" label-for="timeInput">
-        <b-form-input
-          id="timeInput"
-          v-model="form.time"
-          type="number"
-          placeholder="seconds"
-          required
-        />
+        <b-form-input id="timeInput" v-model="form.time" type="number" placeholder="seconds" required />
       </b-form-group>
       <b-button type="submit" :variant="get_variant" :disabled="!can_upload">
         <template v-if="is_uploading">
@@ -87,12 +55,7 @@ export default {
   },
   computed: {
     can_upload() {
-      return (
-        !this.is_uploading &&
-        (this.form.file !== null &&
-          this.form.mode !== null &&
-          this.form.time !== null)
-      )
+      return !this.is_uploading && (this.form.file !== null && this.form.mode !== null && this.form.time !== null)
     },
     get_variant() {
       return this.is_uploading ? "secondary" : "success"
@@ -120,11 +83,7 @@ export default {
           time: 120,
         }
         this.is_uploading = false
-        if (
-          e.response.data &&
-          e.response.data.status_code &&
-          e.response.data.status_code !== 0
-        ) {
+        if (e.response.data && e.response.data.status_code && e.response.data.status_code !== 0) {
           this.error_message = e.response.data.message
         } else {
           this.error_message = "Unknown Upload Error"
@@ -154,11 +113,7 @@ export default {
             time: 120,
           }
           this.is_uploading = false
-          if (
-            e.response.data &&
-            e.response.data.status_code &&
-            e.response.data.status_code !== 0
-          ) {
+          if (e.response.data && e.response.data.status_code && e.response.data.status_code !== 0) {
             this.error_message = e.response.data.message
           } else {
             this.error_message = "Unknown Analyze Error"

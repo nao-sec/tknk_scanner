@@ -17,22 +17,14 @@
     </template>
     <template slot="AVClass" slot-scope="avclass">
       <template v-if="avclass.item.AVClass.data.length !== 0">
-        <b-badge
-          v-for="(cls, key) in avclass.item.AVClass.data"
-          :key="key"
-          variant="primary"
-          class="avclass"
-        >
+        <b-badge v-for="(cls, key) in avclass.item.AVClass.data" :key="key" variant="primary" class="avclass">
           {{ cls.family_name }}
           <b-badge variant="light" class="num">
             {{ cls.count }}
           </b-badge>
         </b-badge>
       </template>
-      <b-badge
-        v-if="avclass.item.AVClass.data.length === 0"
-        variant="secondary"
-      >
+      <b-badge v-if="avclass.item.AVClass.data.length === 0" variant="secondary">
         No AVClass detects
       </b-badge>
     </template>

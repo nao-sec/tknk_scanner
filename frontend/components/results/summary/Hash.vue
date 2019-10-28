@@ -1,15 +1,8 @@
 <template>
   <div id="hash">
     <div>
-      <span ref="copyIcon"
-        ><font-awesome-icon :icon="icon" @click="copy"
-      /></span>
-      <b-tooltip
-        :show.sync="does_show_tooltip"
-        triggers="click"
-        :target="() => $refs.copyIcon"
-        placement="bottom"
-      >
+      <span ref="copyIcon"><font-awesome-icon :icon="icon" @click="copy"/></span>
+      <b-tooltip :show.sync="does_show_tooltip" triggers="click" :target="() => $refs.copyIcon" placement="bottom">
         {{ message }}
       </b-tooltip>
     </div>

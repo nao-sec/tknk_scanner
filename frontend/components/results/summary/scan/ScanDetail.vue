@@ -1,12 +1,5 @@
 <template>
-  <b-table
-    :items="scanSummary"
-    :fields="fields"
-    class="summary-table"
-    stacked
-    fixed
-    small
-  >
+  <b-table :items="scanSummary" :fields="fields" class="summary-table" stacked fixed small>
     <template slot="uuid" slot-scope="uuid">
       <download :id="uuid.value" />
     </template>

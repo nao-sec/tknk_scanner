@@ -1,10 +1,7 @@
 <template>
   <div>
     <b-navbar-nav>
-      <b-nav-item
-        :to="{ name: 'jobs' }"
-        :active="current_length !== 0 || jobs.queued.length !== 0"
-      >
+      <b-nav-item :to="{ name: 'jobs' }" :active="current_length !== 0 || jobs.queued.length !== 0">
         Processing:
         <length-badge :elements="[jobs.current_job]"></length-badge> / Queued:
         <length-badge elements="jobs.queued_jobs"></length-badge>
@@ -29,9 +26,7 @@ export default createComponent({
     },
   },
   setup() {
-    onMounted(() => {
-      this.$accessor.registerFetchJobsWorker()
-    })
+    onMounted(() => (this as any).$accessor.registerFetchJobsWorker())
   },
 })
 </script>

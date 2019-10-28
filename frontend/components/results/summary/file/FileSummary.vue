@@ -1,12 +1,5 @@
 <template>
-  <b-table
-    :items="fileSummary"
-    :fields="fields"
-    class="summary-table"
-    stacked
-    fixed
-    small
-  >
+  <b-table :items="fileSummary" :fields="fields" class="summary-table" stacked fixed small>
     <template slot="file_name" slot-scope="file_name">
       <div class="filename">
         {{ file_name.value }}

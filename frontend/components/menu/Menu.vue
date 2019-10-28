@@ -1,22 +1,14 @@
 <template>
   <b-navbar toggleable="md" type="dark" class="navbar">
     <b-navbar-brand :to="{ name: 'index' }">
-      <img
-        src="~/assets/tknk.png"
-        class="d-inline-block align-top"
-        alt="tknk_scanner"
-      />
+      <img src="~/assets/tknk.png" class="d-inline-block align-top" alt="tknk_scanner" />
       tknk_scanner
     </b-navbar-brand>
     <b-navbar-toggle target="nav_collapse" />
     <b-collapse id="nav_collapse" is-nav>
       <b-navbar-nav>
-        <b-nav-item :to="{ name: 'index' }" active>
-          <i class="fas fa-bug" /> Scan
-        </b-nav-item>
-        <b-nav-item :to="{ name: 'page-page', params: { page: 1 } }" active>
-          <i class="fas fa-clock" /> Recent
-        </b-nav-item>
+        <b-nav-item :to="{ name: 'index' }" active> <i class="fas fa-bug" /> Scan </b-nav-item>
+        <b-nav-item :to="{ name: 'page-page', params: { page: 1 } }" active> <i class="fas fa-clock" /> Recent </b-nav-item>
       </b-navbar-nav>
 
       <b-navbar-nav class="ml-auto">

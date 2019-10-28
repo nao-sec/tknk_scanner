@@ -46,12 +46,10 @@ export default {
     }
   },
   async mounted() {
-    const { data } = await this.$axios
-      .get(`/search/${this.$route.params.type}/${this.$route.params.hash}`)
-      .catch(e => {
-        console.error(`Page fetching error: ${e}`)
-        this.$root.error(e)
-      })
+    const { data } = await this.$axios.get(`/search/${this.$route.params.type}/${this.$route.params.hash}`).catch(e => {
+      console.error(`Page fetching error: ${e}`)
+      this.$root.error(e)
+    })
 
     this.results = data.results
   },

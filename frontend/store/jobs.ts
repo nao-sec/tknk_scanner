@@ -13,12 +13,7 @@ export const mutations = {
   },
   change_current(state, newCurrentJobs) {
     // stop unnecessary changing
-    if (
-      (state.current === null && newCurrentJobs === null) ||
-      (newCurrentJobs !== null &&
-        state.current !== null &&
-        newCurrentJobs.id === state.current.id)
-    ) {
+    if ((state.current === null && newCurrentJobs === null) || (newCurrentJobs !== null && state.current !== null && newCurrentJobs.id === state.current.id)) {
       return null
     }
 

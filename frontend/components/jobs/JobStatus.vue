@@ -1,94 +1,59 @@
 <template>
   <div class="status">
-    <font-awesome-icon
-      :icon="statusIcon"
-      :class="statusClass"
-      :spin="status === 1"
-      size="xs"
-    />
-    <nuxt-link
-      v-if="status === 0"
-      :to="{ name: 'results-resultid', params: { resultid: id } }"
-    >
-      Results
-    </nuxt-link>
+    <job-status-badge :is-success="state.isSuccess" :status="state.statusCode" :report-id="state.reportID"></job-status-badge>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Emit } from "vue-property-decorator"
+import { createComponent, onBeforeUnmount, onMounted, reactive } from "@vue/composition-api"
+import JobStatusBadge from "~/components/atoms/job-status-badge.vue"
 
-@Component
-export default class JobStatus extends Vue {
-  // data
-  status: any = null
-  isSuccess: boolean = false
-  paused: boolean = false
+export default createComponent({
+  components: {
+    JobStatusBadge,
+  },
+  props: {
+    reportId: {
+      type: String,
+      required: true,
+    },
+  },
+  setup({ reportId }) {
+    // data
+    const state = reactive({
+      paused: false,
+      statusCode: -1,
+      isSuccess: false,
+    })
 
-  // props
-  @Prop({ type: String })
-  id: string = ""
-
-  // computed
-  get statusIcon(): string {
-    if (this.status === 1) {
-      // processing
-      return "spinner"
-    } else if (this.status === 0 && this.isSuccess) {
-      // done and scanning success
-      return "check-circle"
-    } else if (this.status === 0 && !this.isSuccess) {
-      // done, but fail scanning
-      return "times-circle"
-    } else {
-      // not implemented state
-      return "question-circle"
+    // methods
+    const fetchResult = async () => {
+      const res: ReportResponse | null = await (this as any).$axios.$get(`/result/${reportId}`).catch(() => {
+        state.paused = true
+      })
+      if (res === null || res.report === null) return
+      state.statusCode = res.status_code
+      state.isSuccess = res.report.meta.is_dumped && res.report.meta.is_matched
     }
-  }
-
-  get statusClass(): string[] {
-    if (this.status === 0 && this.isSuccess) {
-      // done and scanning success
-      return ["success"]
-    } else if (this.status === 0 && !this.isSuccess) {
-      // done, but fail scanning
-      return ["fail"]
-    } else {
-      // not implemented state
-      return ["unknown"]
-    }
-  }
-
-  // methods
-  @Emit()
-  fetchResult() {
-    this.$axios
-      .get(`/results/${this.id}`)
-      .then(res => {
-        this.status = res.data.status_code
-        if (res.data.status_code === 0) {
-          this.isSuccess = res.data.report.result.is_success
+    onMounted(() => {
+      const loop = () => {
+        fetchResult()
+        if (!state.paused) {
+          window.setTimeout(loop, 9000)
         }
-      })
-      .catch(e => {
-        console.error(`Fetching result error: ${e}`)
-        this.paused = true
-      })
-  }
+      }
+      loop()
+    })
 
-  @Emit()
-  nextTick() {
-    this.fetchResult()
-    if ((this.status === null || this.status !== 0) && !this.paused) {
-      setTimeout(this.nextTick, 9000)
+    onBeforeUnmount(() => {
+      state.paused = true
+    })
+
+    return {
+      state,
     }
-  }
-
-  // life cycle
-  mounted() {
-    this.nextTick()
-  }
-}
+  },
+})
 </script>
 
 <style lang="stylus" scoped>

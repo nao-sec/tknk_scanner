@@ -3,13 +3,7 @@
     <b-badge variant="danger" to="#" @click="show_detail">
       {{ yara }}
     </b-badge>
-    <b-modal
-      ref="ruleDetail"
-      class="detail"
-      size="lg"
-      hide-footer
-      :title="yara"
-    >
+    <b-modal ref="ruleDetail" class="detail" size="lg" hide-footer :title="yara">
       <template slot="modal-title" slot-scope="data">
         <span class="title">{{ data.value }}</span>
       </template>

@@ -60,9 +60,7 @@ export default {
     ...mapState(["report"]),
   },
   validate({ params }) {
-    return /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(
-      params.resultid,
-    )
+    return /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(params.resultid)
   },
   created() {
     this.fetch_data()
@@ -75,12 +73,10 @@ export default {
   methods: {
     async fetch_data() {
       if (this.report.status_code === null || this.report.status_code === 1) {
-        const res = await this.$axios
-          .$get("/results/" + this.$route.params.resultid, { progress: false })
-          .catch(e => {
-            clearInterval(this.interval)
-            throw this.$root.error(e)
-          })
+        const res = await this.$axios.$get("/results/" + this.$route.params.resultid, { progress: false }).catch(e => {
+          clearInterval(this.interval)
+          throw this.$root.error(e)
+        })
         if (res.status_code !== 1) {
           this.$store.commit("report/set_result", res)
         }

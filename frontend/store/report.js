@@ -26,8 +26,7 @@ export const getters = {
       {
         AVClass: state.avclass,
         "DIE Indicators": state.die,
-        detect_rules:
-          state.target_scan === null ? null : state.target_scan.detect_rule,
+        detect_rules: state.target_scan === null ? null : state.target_scan.detect_rule,
       },
     ]
   },

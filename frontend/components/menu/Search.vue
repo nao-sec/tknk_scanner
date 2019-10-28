@@ -1,21 +1,10 @@
 <template>
   <b-nav-form @submit="submit">
-    <b-form-input
-      ref="inputHash"
-      v-model="hash"
-      size="sm"
-      :class="input_class"
-      type="text"
-      placeholder="MD5, SHA-1 or SHA-256"
-    />
+    <b-form-input ref="inputHash" v-model="hash" size="sm" :class="input_class" type="text" placeholder="MD5, SHA-1 or SHA-256" />
     <b-button size="sm" variant="success" type="submit" class="mr-sm-5">
       Search
     </b-button>
-    <b-tooltip
-      ref="hintingTooltip"
-      :disabled.sync="disabled"
-      :target="() => $refs.inputHash"
-    >
+    <b-tooltip ref="hintingTooltip" :disabled.sync="disabled" :target="() => $refs.inputHash">
       You should input md5, sha1 or sha256 hash ;P
     </b-tooltip>
   </b-nav-form>

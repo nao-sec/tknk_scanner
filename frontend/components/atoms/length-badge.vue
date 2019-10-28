@@ -1,5 +1,5 @@
 <template>
-  <span v-bind:class="{ working: isActive }">{{ len }}</span>
+  <span :class="{ working: isActive }">{{ len }}</span>
 </template>
 
 <script lang="ts">

@@ -1,8 +1,8 @@
 <template>
-  <div v-if="this.jobs.length !== 0">
+  <div v-if="jobs_length !== 0">
     <b-table :items="items">
       <template slot="Status" slot-scope="data">
-        <job-status :id="data.item.Status" />
+        <job-status :report-id="data.item.Status"></job-status>
       </template>
     </b-table>
   </div>
@@ -12,30 +12,38 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator"
-import JobStatus from "~/components/jobs/JobStatus"
+import { computed, createComponent, PropType } from "@vue/composition-api"
+import JobStatus from "~/components/jobs/JobStatus.vue"
 
-@Component({
+export default createComponent({
+  name: "jobs-list",
   components: {
     JobStatus,
   },
-})
-export default class List extends Vue {
-  // props
-  @Prop({ type: [Object] })
-  jobs: Job[] = []
+  props: {
+    jobs: {
+      type: Array as PropType<Job[]>,
+      required: true,
+    },
+  },
+  setup({ jobs }) {
+    const jobs_length = computed(() => jobs.length)
 
-  get items() {
-    return this.jobs.map(o => {
-      return {
-        "File Name": o.config.target_file,
-        Mode: o.config.mode,
-        "Running Time": o.config.time,
-        Status: o.id,
-      }
+    const items = computed(() => {
+      return jobs.map(job => ({
+        "File Name": job.config.target_file,
+        Mode: job.config.mode,
+        "Running Time": job.config.time,
+        Status: job.id,
+      }))
     })
-  }
-}
+
+    return {
+      items,
+      jobs_length,
+    }
+  },
+})
 </script>
 
 <style lang="stylus" scoped>

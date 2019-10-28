@@ -13,8 +13,7 @@ const config: Configuration = {
       {
         hid: "description",
         name: "description",
-        content:
-          "tknk_scanner is community-based integrated malware identification system",
+        content: "tknk_scanner is community-based integrated malware identification system",
       },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
@@ -53,11 +52,7 @@ const config: Configuration = {
     ignoreNotFoundWarnings: true,
   },
   modules: ["@nuxtjs/axios", "bootstrap-vue/nuxt", "@nuxtjs/proxy"],
-  plugins: [
-    "~plugins/vue-clipboard2",
-    "~plugins/fontawesome",
-    "@/plugins/composition-api",
-  ],
+  plugins: ["~plugins/vue-clipboard2", "~plugins/fontawesome", "@/plugins/composition-api"],
   axios: {
     baseURL: "/api",
   },

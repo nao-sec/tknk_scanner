@@ -8,12 +8,7 @@
     <b-row>
       <b-col>
         <reports-summary :items="scope_results" />
-        <b-pagination
-          v-model="current_page"
-          align="center"
-          :total-rows="max_pages * 50"
-          :per-page="50"
-        />
+        <b-pagination v-model="current_page" align="center" :total-rows="max_pages * 50" :per-page="50" />
       </b-col>
     </b-row>
   </b-container>
@@ -45,12 +40,10 @@ export default {
     },
   },
   async mounted() {
-    const { data } = await this.$axios
-      .get(`/page/${this.$route.params.page}`)
-      .catch(e => {
-        console.error(`Page fetching error: ${e}`)
-        this.$root.error(e)
-      })
+    const { data } = await this.$axios.get(`/page/${this.$route.params.page}`).catch(e => {
+      console.error(`Page fetching error: ${e}`)
+      this.$root.error(e)
+    })
     this.current_page = parseInt(this.$route.params.page, 10)
     this.max_pages = data.page_size
     this.scope_results = data.page
