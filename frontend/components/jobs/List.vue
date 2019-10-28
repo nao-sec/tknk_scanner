@@ -14,6 +14,7 @@
 <script lang="ts">
 import { computed, createComponent, PropType } from "@vue/composition-api"
 import JobStatus from "~/components/jobs/JobStatus.vue"
+import { Job } from "~/types/tknk"
 
 export default createComponent({
   name: "jobs-list",

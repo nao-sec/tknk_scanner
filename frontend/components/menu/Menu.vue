@@ -30,10 +30,10 @@ export default createComponent({
     Queue,
     Search,
   },
-  setup() {
+  setup(props, { root }) {
     return {
       jobs: computed(() => {
-        return (this as any).$accessor.currentJobs
+        return (root as any).$accessor.currentJobs
       }),
     }
   },

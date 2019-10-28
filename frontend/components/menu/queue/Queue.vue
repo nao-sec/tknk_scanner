@@ -13,6 +13,7 @@
 <script lang="ts">
 import { computed, createComponent, PropType } from "@vue/composition-api"
 import LengthBadge from "@/components/atoms/length-badge.vue"
+import { Jobs } from "~/types/tknk"
 
 export default createComponent({
   name: "Queue",
@@ -29,7 +30,7 @@ export default createComponent({
     const isActive = computed(() => jobs.current_job !== null || jobs.queued_jobs.length !== 0)
     return {
       isActive,
-      currentJobs: computed(() => [jobs.current_job]),
+      currentJobs: computed(() => (jobs.current_job === null ? [] : [jobs.current_job])),
       queuedJobs: computed(() => jobs.queued_jobs),
     }
   },

@@ -7,6 +7,7 @@
 <script lang="ts">
 import { createComponent, onBeforeUnmount, onMounted, reactive } from "@vue/composition-api"
 import JobStatusBadge from "~/components/atoms/job-status-badge.vue"
+import { ReportResponse } from "~/types/tknk"
 
 export default createComponent({
   components: {

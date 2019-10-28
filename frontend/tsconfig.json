@@ -14,22 +14,24 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"],
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "tknk": ["types/tknk/*.d.ts"]
     },
-    "types": ["@types/node", "@nuxt/vue-app", "@nuxt/types"],
-    "files": [
-      "shims-vue.d.ts"
-    ],
-    "include": [
-      "components/**/*.ts",
-      "components/**/*.vue",
-      "layouts/**/*.ts",
-      "layouts/**/*.vue",
-      "pages/**/*.ts",
-      "pages/**/*.vue"
-    ],
-    "exclude": [
-      "node_modules"
-    ]
-  }
+    "types": ["@types/node", "@nuxt/types"],
+    "traceResolution": true
+  },
+  "files": [
+    "shims-vue.d.ts"
+  ],
+  "include": [
+    "components/**/*.ts",
+    "components/**/*.vue",
+    "layouts/**/*.ts",
+    "layouts/**/*.vue",
+    "pages/**/*.ts",
+    "pages/**/*.vue"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

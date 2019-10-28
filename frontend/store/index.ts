@@ -1,7 +1,8 @@
 import { getAccessorType, actionTree, mutationTree } from "nuxt-typed-vuex"
+import { Jobs, Job } from "~/types/tknk"
 
 export const state = () => ({
-  currentJobs: {} as Jobs,
+  currentJobs: { current_job: null, queued_jobs: [] } as Jobs,
   finishedJobs: [] as Job[],
   isPausedFetchJobs: false as boolean,
 })

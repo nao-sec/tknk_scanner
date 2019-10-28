@@ -3,7 +3,7 @@ import { config as dConfig } from "dotenv"
 
 dConfig()
 
-const config: Configuration = {
+export default {
   mode: "spa",
   head: {
     title: "tknk_Scanner",
@@ -62,6 +62,4 @@ const config: Configuration = {
       auth: process.env.TKNK_DEVELOP_AUTH,
     },
   },
-}
-
-export default config
+} as Configuration

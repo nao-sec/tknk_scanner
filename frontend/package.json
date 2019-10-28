@@ -5,10 +5,10 @@
   "author": "nomuken <nomuken@spica.bz>",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
-    "generate": "nuxt generate",
+    "dev": "nuxt-ts",
+    "build": "nuxt-ts build",
+    "start": "nuxt-ts start",
+    "generate": "nuxt-ts generate",
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore ."
   },
   "dependencies": {
