@@ -42,12 +42,7 @@ export default {
         mode: null,
         time: 120,
       },
-      scan_mode: [
-        { value: "hollows_hunter", text: "hollows_hunter" },
-        { value: "procdump", text: "procdump" },
-        { value: "diff", text: "diff" },
-        { value: "scylla", text: "scylla" },
-      ],
+      scan_mode: [{ value: "hollows_hunter", text: "hollows_hunter" }, { value: "procdump", text: "procdump" }, { value: "diff", text: "diff" }],
       error_message: null,
       is_uploading: false,
       show: true,
