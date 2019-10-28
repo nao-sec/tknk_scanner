@@ -1,17 +1,17 @@
 <template>
   <div>
     <b-navbar-nav>
-      <b-nav-item :to="{ name: 'jobs' }" :active="current_length !== 0 || jobs.queued.length !== 0">
+      <b-nav-item :to="{ name: 'jobs' }" :active="isActive">
         Processing:
-        <length-badge :elements="[jobs.current_job]"></length-badge> / Queued:
-        <length-badge elements="jobs.queued_jobs"></length-badge>
+        <length-badge :elements="currentJobs"></length-badge> / Queued:
+        <length-badge :elements="queuedJobs"></length-badge>
       </b-nav-item>
     </b-navbar-nav>
   </div>
 </template>
 
 <script lang="ts">
-import { createComponent, onMounted, PropType } from "@vue/composition-api"
+import { computed, createComponent, PropType } from "@vue/composition-api"
 import LengthBadge from "@/components/atoms/length-badge.vue"
 
 export default createComponent({
@@ -25,8 +25,13 @@ export default createComponent({
       required: true,
     },
   },
-  setup() {
-    onMounted(() => (this as any).$accessor.registerFetchJobsWorker())
+  setup({ jobs }) {
+    const isActive = computed(() => jobs.current_job !== null || jobs.queued_jobs.length !== 0)
+    return {
+      isActive,
+      currentJobs: computed(() => [jobs.current_job]),
+      queuedJobs: computed(() => jobs.queued_jobs),
+    }
   },
 })
 </script>

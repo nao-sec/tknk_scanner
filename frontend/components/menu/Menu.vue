@@ -7,29 +7,37 @@
     <b-navbar-toggle target="nav_collapse" />
     <b-collapse id="nav_collapse" is-nav>
       <b-navbar-nav>
-        <b-nav-item :to="{ name: 'index' }" active> <i class="fas fa-bug" /> Scan </b-nav-item>
-        <b-nav-item :to="{ name: 'page-page', params: { page: 1 } }" active> <i class="fas fa-clock" /> Recent </b-nav-item>
+        <b-nav-item :to="{ name: 'index' }" active><font-awesome-icon icon="bug" /> Scan </b-nav-item>
+        <b-nav-item :to="{ name: 'page-page', params: { page: 1 } }" active><font-awesome-icon icon="clock" /> Recent </b-nav-item>
       </b-navbar-nav>
 
       <b-navbar-nav class="ml-auto">
         <search />
-        <queue right />
+        <queue :jobs="jobs" right />
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
 </template>
 
-<script>
-import Queue from "~/components/menu/queue/Queue"
-import Search from "~/components/menu/Search"
+<script lang="ts">
+import { computed, createComponent } from "@vue/composition-api"
+import Queue from "~/components/menu/queue/Queue.vue"
+import Search from "~/components/menu/Search.vue"
 
-export default {
+export default createComponent({
   name: "Menu",
   components: {
     Queue,
     Search,
   },
-}
+  setup() {
+    return {
+      jobs: computed(() => {
+        return (this as any).$accessor.currentJobs
+      }),
+    }
+  },
+})
 </script>
 
 <style lang="stylus" scoped>
