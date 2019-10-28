@@ -31,15 +31,16 @@
   </b-table>
 </template>
 
-<script>
-import Yara from "~/components/Yara"
-export default {
+<script lang="ts">
+import { createComponent } from "@vue/composition-api"
+import Yara from "~/components/Yara.vue"
+export default createComponent({
   name: "DetectsSummary",
   components: {
     Yara,
   },
   props: ["detectsSummary"],
-}
+})
 </script>
 
 <style lang="stylus" scoped>

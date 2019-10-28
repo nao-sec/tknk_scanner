@@ -8,9 +8,9 @@
 </template>
 
 <script lang="ts">
-import { computed, createComponent } from "@vue/composition-api"
+import Vue from "vue"
 
-export default createComponent({
+export default Vue.extend({
   name: "JobStatusBadge",
   props: {
     isSuccess: {
@@ -27,41 +27,35 @@ export default createComponent({
     },
   },
 
-  setup({ isSuccess, status, reportId }) {
-    const statusIcon = computed(() => {
-      if (status === 1) {
+  computed: {
+    statusIcon() {
+      if (this.status === 1) {
         // processing
         return "spinner"
-      } else if (status === 0 && isSuccess) {
+      } else if (this.status === 0 && this.isSuccess) {
         // done and scanning success
         return "check-circle"
-      } else if (status === 0 && !isSuccess) {
+      } else if (this.status === 0 && !this.isSuccess) {
         // done, but fail scanning
         return "times-circle"
       } else {
         // not implemented state
         return "question-circle"
       }
-    })
+    },
 
-    const statusClass = computed(() => {
-      if (status === 0 && isSuccess) {
+    statusClass() {
+      if (this.status === 0 && this.isSuccess) {
         // done and scanning success
         return ["success"]
-      } else if (status === 0 && !isSuccess) {
+      } else if (this.status === 0 && !this.isSuccess) {
         // done, but fail scanning
         return ["fail"]
       } else {
         // not implemented state
         return ["unknown"]
       }
-    })
-
-    return {
-      statusIcon,
-      statusClass,
-      reportId,
-    }
+    },
   },
 })
 </script>

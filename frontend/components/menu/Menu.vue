@@ -20,22 +20,21 @@
 </template>
 
 <script lang="ts">
-import { computed, createComponent } from "@vue/composition-api"
+import Vue from "vue"
 import Queue from "~/components/menu/queue/Queue.vue"
 import Search from "~/components/menu/Search.vue"
+import { Jobs } from "~/types/tknk"
 
-export default createComponent({
+export default Vue.extend({
   name: "Menu",
   components: {
     Queue,
     Search,
   },
-  setup(props, { root }) {
-    return {
-      jobs: computed(() => {
-        return (root as any).$accessor.currentJobs
-      }),
-    }
+  computed: {
+    jobs(): Jobs {
+      return (this as any).$accessor.currentJobs
+    },
   },
 })
 </script>

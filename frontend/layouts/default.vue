@@ -7,16 +7,22 @@
   </div>
 </template>
 
-<script>
-import Page from "~/components/ui/Page"
+<script lang="ts">
+import { createComponent, onMounted } from "@vue/composition-api"
+import Page from "~/components/ui/Page.vue"
 import Menu from "~/components/menu/Menu.vue"
 
-export default {
+export default createComponent({
   components: {
     Menu,
     Page,
   },
-}
+  setup(props, { root }) {
+    onMounted(async () => {
+      await (root as any).$accessor.registerFetchJobsWorker()
+    })
+  },
+})
 </script>
 
 <style lang="stylus">

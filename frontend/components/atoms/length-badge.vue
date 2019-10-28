@@ -3,27 +3,22 @@
 </template>
 
 <script lang="ts">
-import { computed, createComponent, PropType } from "@vue/composition-api"
-export default createComponent({
+import Vue, { PropOptions } from "vue"
+export default Vue.extend({
   name: "LengthBadge",
   props: {
     elements: {
-      type: Array as PropType<any[]>,
+      type: Array,
       required: true,
-    },
+    } as PropOptions<any[]>,
   },
-  setup({ elements }) {
-    const len = computed(() => {
-      return elements.length
-    })
-    const isActive = computed(() => {
-      return elements.length !== 0
-    })
-
-    return {
-      len,
-      isActive,
-    }
+  computed: {
+    len(): number {
+      return this.elements.length
+    },
+    isActive(): boolean {
+      return this.elements.length !== 0
+    },
   },
 })
 </script>

@@ -26,20 +26,20 @@ export const actions = actionTree(
   { state, mutations },
   {
     async fetchJobs({ commit }) {
-      const jobs: Jobs = await this.$axios.$get("/jobs").catch(() => {
+      const jobs: Jobs = await (this as any).$axios.$get("/jobs").catch(() => {
         commit("pauseFetchJobs")
       })
       commit("setCurrentJobs", jobs)
     },
     async registerFetchJobsWorker({ state }) {
-      await this.app.$accessor.fetchJobs
+      await this.app.$accessor.fetchJobs()
       if (state.currentJobs.current_job !== null) {
-        setInterval(() => {
-          this.app.$accessor.registerFetchJobsWorker()
+        setTimeout(() => {
+          this.app.$accessor.registerFetchJobsWorker(state)
         }, 5000)
       } else {
-        setInterval(() => {
-          this.app.$accessor.registerFetchJobsWorker()
+        setTimeout(() => {
+          this.app.$accessor.registerFetchJobsWorker(state)
         }, 10000)
       }
     },

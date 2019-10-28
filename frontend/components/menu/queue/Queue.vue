@@ -11,28 +11,31 @@
 </template>
 
 <script lang="ts">
-import { computed, createComponent, PropType } from "@vue/composition-api"
+import Vue, { PropOptions } from "vue"
 import LengthBadge from "@/components/atoms/length-badge.vue"
-import { Jobs } from "~/types/tknk"
+import { Jobs, Job } from "~/types/tknk"
 
-export default createComponent({
+export default Vue.extend({
   name: "Queue",
   components: {
     LengthBadge,
   },
   props: {
     jobs: {
-      type: Object as PropType<Jobs>,
+      type: Object,
       required: true,
-    },
+    } as PropOptions<Jobs>,
   },
-  setup({ jobs }) {
-    const isActive = computed(() => jobs.current_job !== null || jobs.queued_jobs.length !== 0)
-    return {
-      isActive,
-      currentJobs: computed(() => (jobs.current_job === null ? [] : [jobs.current_job])),
-      queuedJobs: computed(() => jobs.queued_jobs),
-    }
+  computed: {
+    isActive(): boolean {
+      return this.jobs.current_job !== null || this.jobs.queued_jobs.length !== 0
+    },
+    currentJobs(): Job[] {
+      return this.jobs.current_job === null ? [] : [this.jobs.current_job]
+    },
+    queuedJobs(): Job[] {
+      return this.jobs.queued_jobs
+    },
   },
 })
 </script>

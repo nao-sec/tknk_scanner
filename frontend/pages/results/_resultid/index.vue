@@ -73,7 +73,7 @@ export default {
   methods: {
     async fetch_data() {
       if (this.report.status_code === null || this.report.status_code === 1) {
-        const res = await this.$axios.$get("/results/" + this.$route.params.resultid, { progress: false }).catch(e => {
+        const res = await this.$axios.$get("/result/" + this.$route.params.resultid, { progress: false }).catch(e => {
           clearInterval(this.interval)
           throw this.$root.error(e)
         })

@@ -17,7 +17,7 @@ export interface Detect {
   count: number
 }
 
-export interface DumpedFilesSanReport {
+export interface DumpedFilesScanReport {
   detect_rules: string[]
   file_name: string
   size: string
@@ -74,7 +74,7 @@ export interface ReportResponse {
 }
 
 export interface Result {
-  dumped_files_scan: DumpedFilesSanReport[]
+  dumped_files_scan: DumpedFilesScanReport[]
   upload_file_scan: UploadedFleScanReport
   plugins: Plugins
   connections: Connection[]
