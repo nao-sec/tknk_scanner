@@ -17,8 +17,7 @@
       "@/*": ["./*"],
       "tknk": ["types/tknk/*.d.ts"]
     },
-    "types": ["@types/node", "@nuxt/types"],
-    "traceResolution": true
+    "types": ["@types/node", "@nuxt/types"]
   },
   "files": [
     "shims-vue.d.ts"

@@ -1,50 +1,41 @@
 <template>
   <b-nav-form @submit="submit">
-    <b-form-input ref="inputHash" v-model="hash" size="sm" :class="input_class" type="text" placeholder="MD5, SHA-1 or SHA-256" />
+    <b-form-input id="search-input-hash" v-model="hash" size="sm" :class="inputClass" type="text" placeholder="MD5, SHA-1 or SHA-256" />
     <b-button size="sm" variant="success" type="submit" class="mr-sm-5">
       Search
     </b-button>
-    <b-tooltip ref="hintingTooltip" :disabled.sync="disabled" :target="() => $refs.inputHash">
+    <b-tooltip id="hintingTooltip" target="search-input-hash" :disabled="state.disabled">
       You should input md5, sha1 or sha256 hash ;P
     </b-tooltip>
   </b-nav-form>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { createComponent, reactive, watch, ref, computed } from "@vue/composition-api"
+
+export default createComponent({
   name: "Search",
-  data() {
-    return {
-      hash: "",
+  setup(props, { root }) {
+    const hash = ref("")
+    const state = reactive({
+      hash,
       disabled: true,
-    }
-  },
-  computed: {
-    input_class() {
-      const cssClass = ["mr-sm-2", "hash"]
+    })
 
-      if (this.hash !== "") {
-        cssClass.push("input")
+    const inputClass = computed(() => {
+      const css_class = ["mr-sm-2", "hash"]
+      if (state.hash !== "") {
+        css_class.push("input")
       }
+      return css_class
+    })
 
-      return cssClass
-    },
-  },
-  watch: {
-    hash() {
-      if (this.hash === "") {
-        this.disabled = true
-        this.$refs.hintingTooltip.$emit("close")
-      }
-    },
-  },
-  methods: {
-    submit(evt) {
+    const submit = (evt: Event) => {
       evt.preventDefault()
 
       let type = ""
-      if (/[a-f0-9]+/.test(this.hash)) {
-        switch (this.hash.length) {
+      if (/[a-f0-9]+/.test(state.hash)) {
+        switch (state.hash.length) {
           case 32:
             type = "md5"
             break
@@ -57,17 +48,35 @@ export default {
         }
       }
       if (type === "") {
-        this.$refs.hintingTooltip.$emit("open")
+        state.disabled = false
+        root.$emit("bv::show::tooltip", "hintingTooltip")
         return
       }
 
-      this.$router.push({
+      root.$router.push({
         name: "search-type-hash",
-        params: { type: type, hash: this.hash },
+        params: { type: type, hash: state.hash },
       })
-    },
+    }
+
+    watch(
+      () => state.hash,
+      () => {
+        if (state.hash === "") {
+          root.$emit("bv::hide::tooltip", "hintingTooltip")
+          state.disabled = true
+        }
+      },
+    )
+
+    return {
+      state,
+      submit,
+      hash,
+      inputClass,
+    }
   },
-}
+})
 </script>
 
 <style lang="stylus" scoped>

@@ -19,7 +19,7 @@ export default createComponent({
       required: true,
     },
   },
-  setup({ reportId }) {
+  setup({ reportId }, { root }) {
     // data
     const state = reactive({
       paused: false,
@@ -29,7 +29,7 @@ export default createComponent({
 
     // methods
     const fetchResult = async () => {
-      const res: ReportResponse | null = await (this as any).$axios.$get(`/result/${reportId}`).catch(() => {
+      const res: ReportResponse | null = await (root as any).$axios.$get(`/result/${reportId}`).catch(() => {
         state.paused = true
       })
       if (res === null || res.report === null) return
