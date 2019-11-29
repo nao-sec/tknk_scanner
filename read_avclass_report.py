@@ -24,7 +24,7 @@ def run_avclass (vt_key, sha256):
     vt_url = "https://www.virustotal.com/#/file/" + sha256 + "/detection"
 
     #run AVClass
-    cmd = ["./avclass/avclass_labeler.py", "-vt", file_name, "-v"]
+    cmd = ["python3 ./avclassplusplus/avclass_labeler.py", "-vt", file_name, "-v"]
     subprocess.call(cmd)
 
     #read AVClass results
