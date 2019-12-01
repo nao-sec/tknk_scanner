@@ -1,3 +1,3 @@
-[submodule "avclass"]
-	path = avclass
-	url = https://github.com/malicialab/avclass.git
+[submodule "avclassplusplus"]
+	path = avclassplusplus
+	url = git@github.com:malrev/avclassplusplus.git
