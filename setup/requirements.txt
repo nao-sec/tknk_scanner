@@ -5,3 +5,4 @@ redis==3.0.1
 rq==0.13.0
 yara-python==3.8.1
 pefile==2018.8.8
+minidump==0.0.10

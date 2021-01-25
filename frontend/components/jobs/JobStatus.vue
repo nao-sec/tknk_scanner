@@ -1,73 +1,67 @@
 <template>
-  <div>
-    <i :class="status_icon"></i>
-    <nuxt-link :to="{ name: 'results-resultid', params: { resultid: id }}" v-if="status === 0">Results</nuxt-link>
+  <div class="status">
+    <job-status-badge :is-success="isSuccess" :status="statusCode" :report-id="reportId"></job-status-badge>
   </div>
 </template>
 
-<script>
-  export default {
-    name: "JobStatus",
-    props: [
-      "id"
-    ],
-    data() {
-      return {
-        status: null,
-        is_success: false,
-        paused: false
-      }
+<script lang="ts">
+import Vue from "vue"
+import JobStatusBadge from "~/components/atoms/job-status-badge.vue"
+import { ReportResponse } from "~/types/tknk"
+
+export default Vue.extend({
+  components: {
+    JobStatusBadge,
+  },
+  props: {
+    reportId: {
+      type: String,
+      required: true,
     },
-    mounted() {
-      this.next_tick();
-    },
-    methods: {
-      fetch_result() {
-        this.$axios.get(`/results/${this.id}`, {progress: false}).then(res => {
-          this.status = res.data["status_code"];
-          if (res.data["status_code"] === 0) {
-            this.is_success = res.data["report"]["result"]["is_success"];
-          }
-        }).catch(e => {
-          console.error(`Fetching result error: ${e}`);
-          this.paused = true;
-        });
-      },
-      next_tick() {
-        this.fetch_result();
-        if ((this.status === null || this.status !== 0) && !this.paused) {
-          setTimeout(this.next_tick, 9000);
-        }
-      },
-    },
-    computed:{
-      status_icon() {
-        let templates = ["fas"];
-        if (this.status === 1) {
-          // processing
-          return templates.concat(["fa-spinner", "fa-spin"]);
-        } else if (this.status === 0 && this.is_success) {
-          // done and scanning success
-          return templates.concat(["fa-check-circle", "success"]);
-        } else if (this.status === 0 && !this.is_success) {
-          // done, but fail scanning
-          return templates.concat(["fa-times-circle", "fail"]);
-        } else {
-          // not implemented state
-          return templates.concat(["fa-question-circle", "unknown"]);
-        }
+  },
+  data() {
+    return {
+      paused: false,
+      statusCode: -1,
+      isSuccess: false,
+    }
+  },
+  mounted() {
+    const loop = () => {
+      this.fetchResult()
+      if (!this.paused) {
+        window.setTimeout(loop, 9000)
       }
     }
-  }
+    loop()
+  },
+
+  beforeDestroy() {
+    this.paused = true
+  },
+  methods: {
+    // methods
+    async fetchResult() {
+      const res: ReportResponse | null = await (this as any).$axios.$get(`/result/${this.reportId}`).catch(() => {
+        this.paused = true
+      })
+      if (res !== null && res.status_code !== undefined) {
+        this.statusCode = res.status_code
+      }
+      if (!(res === null || res.report === undefined || res.report === null)) {
+        this.isSuccess = res.report.meta.is_dumped && res.report.meta.is_matched
+        this.$emit("job-finish")
+      }
+    },
+  },
+})
 </script>
 
 <style lang="stylus" scoped>
-  .success
-  .fail
-  .unknown
-    padding-right 1em
-  .success
-    color #00ff00
-  .fail
-    color #ff3300
+.status
+  height 1em
+.success
+  color #00ff00
+.fail
+  color #ff3300
 </style>

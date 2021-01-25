@@ -10,27 +10,27 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
-  import Status from '~/components/results/summary/scan/Status'
-  import ScanSummary from '~/components/results/summary/scan/ScanDetail'
+import { mapState, mapGetters } from "vuex"
+import Status from "~/components/results/summary/scan/Status"
+import ScanSummary from "~/components/results/summary/scan/ScanDetail"
 
-  export default {
-    name: "Summary",
-    components: {
-      Status,
-      ScanSummary,
-    },
-    computed: {
-      ...mapState([ 'report' ]),
-      ... mapGetters({
-        'scan_summary': 'report/scan_summary',
-      })
-    }
-  }
+export default {
+  name: "Summary",
+  components: {
+    Status,
+    ScanSummary,
+  },
+  computed: {
+    ...mapState(["report"]),
+    ...mapGetters({
+      scan_summary: "report/scan_summary",
+    }),
+  },
+}
 </script>
 
 <style lang="stylus" scoped>
-  .download-wrapper
-    width 100%
-    text-align center
+.download-wrapper
+  width 100%
+  text-align center
 </style>

@@ -3,50 +3,53 @@
     <b-row class="tasks">
       <b-col>
         <h1>Current</h1>
-        <list :jobs="current" />
+        <list :jobs="current" @job-finish="currentFinish"></list>
       </b-col>
     </b-row>
     <b-row class="tasks">
       <b-col>
         <h1>Queued</h1>
-        <list :jobs="jobs.queued" />
-      </b-col>
-    </b-row>
-    <b-row class="tasks">
-      <b-col>
-        <h1>Finished</h1>
-        <list :jobs="jobs.finished" />
+        <list :jobs="queued"></list>
       </b-col>
     </b-row>
   </b-container>
 </template>
 
-<script>
-  import List from '~/components/jobs/List'
-  import { mapState } from 'vuex'
+<script lang="ts">
+import Vue from "vue"
+import List from "~/components/jobs/List.vue"
 
-  export default {
-    name: "jobs",
-    components: {
-      List
+export default Vue.extend({
+  name: "Jobs",
+  components: {
+    List,
+  },
+  computed: {
+    current() {
+      const c = (this as any).$accessor.currentJobs.current_job
+      if (c === null) {
+        return []
+      }
+      return [c]
     },
-    computed: {
-      current() {
-        if(this.jobs.current === null) {
-          return []
-        } else {
-          return [ this.jobs.current ];
-        }
-      },
-      ... mapState([ 'jobs' ])
-    }
-
-  }
+    queued() {
+      return (this as any).$accessor.currentJobs.queued_jobs
+    },
+    finished() {
+      return (this as any).$accessor.finishedJobs
+    },
+  },
+  methods: {
+    currentFinish() {
+      return (this as any).$accessor.jobFinish(this.current[0])
+    },
+  },
+})
 </script>
 
 <style lang="stylus" scoped>
-  .tasks
-    padding-bottom 1em
-  hr
-    background-color white
+.tasks
+  padding-bottom 1em
+hr
+  background-color white
 </style>

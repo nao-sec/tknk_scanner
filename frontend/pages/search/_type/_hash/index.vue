@@ -14,48 +14,46 @@
 </template>
 
 <script>
-  import ReportsSummary from '~/components/ReportsSummary'
+import ReportsSummary from "~/components/ReportsSummary"
 
-  export default {
-    name: "search-index",
-    components: {
-      ReportsSummary
-    },
-    data() {
-      return {
-        results: [],
-      }
-    },
-    validate({ params }) {
-      // is it hash strings?
-      if(!/[0-9a-f]+/.test(params.hash)) {
-        return false;
-      }
+export default {
+  name: "SearchIndex",
+  components: {
+    ReportsSummary,
+  },
+  data() {
+    return {
+      results: [],
+    }
+  },
+  validate({ params }) {
+    // is it hash strings?
+    if (!/[0-9a-f]+/.test(params.hash)) {
+      return false
+    }
 
-      // is it truly length?
-      let length = params.hash.length;
-      switch (params.type) {
-        case 'md5':
-          return length === 32;
-        case 'sha1':
-          return length === 40;
-        case 'sha256':
-          return length === 64;
-        default:
-          return false;
-      }
-    },
-    async mounted() {
-      let {data} = await this.$axios.get(`/search/${this.$route.params.type}/${this.$route.params.hash}`).catch(e => {
-        console.error(`Page fetching error: ${e}`);
-        this.$root.error(e);
-      });
+    // is it truly length?
+    const length = params.hash.length
+    switch (params.type) {
+      case "md5":
+        return length === 32
+      case "sha1":
+        return length === 40
+      case "sha256":
+        return length === 64
+      default:
+        return false
+    }
+  },
+  async mounted() {
+    const { data } = await this.$axios.get(`/search/${this.$route.params.type}/${this.$route.params.hash}`).catch(e => {
+      console.error(`Page fetching error: ${e}`)
+      this.$root.error(e)
+    })
 
-      this.results = data.results;
-    },
-  }
+    this.results = data.results
+  },
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

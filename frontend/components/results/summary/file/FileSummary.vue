@@ -23,33 +23,31 @@
 </template>
 
 <script>
-  import Hash from '~/components/results/summary/Hash'
+import Hash from "~/components/results/summary/Hash"
 
-  export default {
-    name: "FileSummary",
-    props: [
-      'fileSummary'
-    ],
-    components: {
-      Hash
+export default {
+  name: "FileSummary",
+  components: {
+    Hash,
+  },
+  props: ["fileSummary"],
+  computed: {
+    fields() {
+      return [
+        { key: "file_name", label: "File Name" },
+        { key: "size", label: "Size" },
+        { key: "magic", label: "Magic" },
+        { key: "md5", label: "MD5" },
+        { key: "sha1", label: "SHA-1" },
+        { key: "sha256", label: "SHA-256" },
+      ]
     },
-    computed: {
-      fields() {
-        return [
-          { key: 'file_name', label: 'File Name' },
-          { key: 'size', label: 'Size'},
-          { key: 'magic', label: 'Magic' },
-          { key: 'md5', label: 'MD5' },
-          { key: 'sha1', label: 'SHA-1' },
-          { key: 'sha256', label: 'SHA-256' }
-        ]
-      }
-    }
-  }
+  },
+}
 </script>
 
 <style lang="stylus" scoped>
-  .magic
-  .filename
-    word-break break-all
+.magic
+.filename
+  word-break break-all
 </style>

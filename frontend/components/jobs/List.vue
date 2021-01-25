@@ -1,44 +1,55 @@
 <template>
-  <div v-if="this.jobs.length !== 0">
+  <div v-if="!isEmpty">
     <b-table :items="items">
-      <template slot="Status" slot-scope="data">
-        <job-status :id="data.item.Status" />
+      <template v-slot:cell(Status)="data">
+        <job-status :report-id="data.item.Status" @job-finish="pulse"></job-status>
       </template>
     </b-table>
   </div>
-  <div class="empty" v-else>
+  <div v-else class="empty">
     <p>Empty :)</p>
   </div>
 </template>
 
-<script>
-  import JobStatus from '~/components/jobs/JobStatus'
+<script lang="ts">
+import Vue, { PropOptions } from "vue"
+import JobStatus from "~/components/jobs/JobStatus.vue"
+import { Job } from "~/types/tknk"
 
-  export default {
-    name: "List",
-    props: [
-      'jobs'
-    ],
-    components: {
-      JobStatus
+export default Vue.extend({
+  name: "JobsList",
+  components: {
+    JobStatus,
+  },
+  props: {
+    jobs: {
+      type: Array,
+      required: true,
+    } as PropOptions<Job[]>,
+  },
+  computed: {
+    isEmpty(): boolean {
+      return this.jobs.length === 0
     },
-    computed: {
-      items() {
-        return this.jobs.map(o => {
-          return {
-            "File Name": o.config.target_file,
-            "Mode": o.config.mode,
-            "Running Time": o.config.time,
-            "Status": o.id
-          }
-        });
-      }
-    }
-  }
+    items(): any[] {
+      return this.jobs.map(job => ({
+        "File Name": job.config.target_file,
+        Mode: job.config.mode,
+        "Running Time": job.config.time,
+        Status: job.id,
+      }))
+    },
+  },
+  methods: {
+    pulse() {
+      this.$emit("job-finish")
+    },
+  },
+})
 </script>
 
 <style lang="stylus" scoped>
-  .empty
-    font-style italic
-    padding-left 1em
+.empty
+  font-style italic
+  padding-left 1em
 </style>

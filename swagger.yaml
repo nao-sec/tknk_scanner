@@ -1,6 +1,6 @@
 openapi: "3.0.0"
 info:
-  version: 1.0.0
+  version: 2.0.0
   title: tknk_scanner API
 servers:
   - url: http://0.0.0.0/api
@@ -44,7 +44,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/upload_response"
+                $ref: "#/components/schemas/upload_status"
         '404':
           description: "something wrong"
           content:
@@ -77,7 +77,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /results/{UUID}:  
+  /result/{UUID}:  
     get:
       tags:
         - results
@@ -95,7 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/result_response"
+                $ref: "#/components/schemas/report_response"
         404:
           description: unexpected error
           content:
@@ -137,7 +137,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/page"
+                $ref: "#/components/schemas/recent_reports"
         '404':
           description: unexpected error
           content:
@@ -197,13 +197,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/search_results"
+                $ref: "#/components/schemas/report_summary"  
         '404':
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"  
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     conf:
@@ -222,7 +222,7 @@ components:
           type: integer
           format: int32
           example: 20
-    upload_response:
+    upload_status:
       properties:
         status_code:
           type: integer
@@ -231,7 +231,7 @@ components:
         path:
           type: string
           example: "target/hoge.exe"
-    result_response:
+    report_response:
       type: object
       required:
         - status_code
@@ -245,88 +245,103 @@ components:
           $ref: "#/components/schemas/report"  
     report:
       properties:
-        mode:
+        meta:
+          $ref: "#/components/schemas/meta"
+        result:
+          $ref: "#/components/schemas/result"
+    meta:
+      type: object
+      properties:
+        UUID:
           type: string
-          example: "hollows_hunter"
+          example: "41ad0e99-f982-4355-abf9-b6a85078efc4"
         timestamp:
           type: string
           example: "2018-11-23T20:42:23.749302"
+        setting:
+          $ref: "#/components/schemas/setting"
+        is_dumped:
+          type: boolean
+          format: int32
+          example: 1
+        is_matched:
+          type: boolean
+          format: int32
+          example: 1
+        comment:
+          type: string
+          example: "Detected with yara rule!"
+        plugins:
+          $ref: "#/components/schemas/plugins_conf"
+    setting:
+      type: object
+      properties:
+        mode:
+          type: string
+          example: "hollows_hunter"
         run_time:
           type: integer
           format: int32
           example: 20
-        scans:
-          type: array
-          items:
-            $ref: "#/components/schemas/scans"
-        target_scan:
-            $ref: "#/components/schemas/target_scan"
-        status_code:
-          type: integer
-          format: int32
-          example: 0
-        UUID:
-          type: string
-          example: "41ad0e99-f982-4355-abf9-b6a85078efc4"
-        magic:
-          type: string
-          example: "PE32 executable (GUI) Intel 80386, for MS Windows"
-        virus_total:
+    plugins_conf:
+      type: object
+      properties:
+        avclass:
           type: boolean
           format: int32
           example: 1
-        avclass:
-          $ref: "#/components/schemas/avclass_key"
         die:
-          type: string
-          example: 
-            - "PE: compiler: MASM32(8-11)[-]"
-            - "PE: linker: Microsoft Linker(12.0)[EXE32]"
-    avclass_key:
-      type: object
-      properties:
-        flag:
-          type: integer
+          type: boolean
           format: int32
           example: 1
-        data:
+        suricata:
+          type: boolean
+          format: int32
+          example: 1
+    result:
+      type: object
+      properties:
+        dump_files_scan:
           type: array
           items:
-            $ref: "#/components/schemas/data"
-    data:
+            $ref: "#/components/schemas/dumped_files_scan_report"
+        upload_file_scan:
+          $ref: "#/components/schemas/uploaded_file_scan_report"
+        plugins:
+          $ref: "#/components/schemas/plugins"
+        connections:
+          type: array
+          items:
+            $ref: "#/components/schemas/connection"
+    connection:
       properties:
-        family_name:
+        remote_address:
           type: string
-          example: "nymaim"
-        count:
+          format: string
+          example: "1.1.1.1"
+        remote_port:
           type: integer
           format: int32
-          example: 2
-    target_scan:
+          example: 80
+        state:
+          type: string
+          format: string
+          example: "Established"
+        pid:
+          type: integer
+          format: int32
+          example: 67892
+        process_name:
+          type: string
+          format: string
+          example: "firefox"
+        path:
+          type: string
+          format: string
+          example: "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
+    dumped_files_scan_report:
       properties:
-        md5:
-          type: string    
-          example: "b45cea3d89ee2f7087e6a6180d10b494"
-        sha1:
-          type: string
-          example: "ba74895fbf97bb6d88e2ed2df0853c21b6a93a33"
-        sha256:
-          type: string
-          example: "27c064b345343c9d3152164b8ea0f777e71ce9c4bd7b79ae39fd716533dd8b49"
-        detect_rule:
-          type: array
-          items:
-            type: string
-            example: "nymaim"
-        file_name:
-          type: string
-          example: "TempuzL51.exe"
-        size:
-          type: string
-          example: "86.0KB"
-    scans:
-      properties:
-        detect_rule:
+        detect_rules:
           type: array
           items:
             type: string
@@ -337,44 +352,169 @@ components:
         size:
           type: string
           example: "4.1KB"
-    page:
+        magic:
+          type: string
+          example: "PE32 executable (GUI) Intel 80386, for MS Windows"
+    uploaded_file_scan_report:
       properties:
-        page:
+        md5:
+          type: string    
+          example: "b45cea3d89ee2f7087e6a6180d10b494"
+        sha1:
+          type: string
+          example: "ba74895fbf97bb6d88e2ed2df0853c21b6a93a33"
+        sha256:
+          type: string
+          example: "27c064b345343c9d3152164b8ea0f777e71ce9c4bd7b79ae39fd716533dd8b49"
+        detect_rules:
           type: array
           items:
-            $ref: "#/components/schemas/report"
+            type: string
+            example: "nymaim"
+        file_name:
+          type: string
+          example: "TempuzL51.exe"
+        size:
+          type: string
+          example: "86.0KB"
+        magic:
+          type: string
+          example: "PE32 executable (GUI) Intel 80386, for MS Windows"    
+    plugins:
+      properties:
+        avclass_key:
+          $ref: "#/components/schemas/avclass"
+        die:
+          type: string
+          example: 
+            - "PE: compiler: MASM32(8-11)[-]"
+            - "PE: linker: Microsoft Linker(12.0)[EXE32]"
+        suricata:
+           $ref: "#/components/schemas/suricata"
+    avclass:
+      type: object
+      properties:
+        flag:
+          type: integer
+          format: int32
+          example: 1
+        detects:
+          type: array
+          items:
+            $ref: "#/components/schemas/detect"
+    detect:
+      properties:
+        family_name:
+          type: string
+          example: "nymaim"
+        count:
+          type: integer
+          format: int32
+          example: 2
+    suricata:
+      properties:
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/event"
+    event:
+      type: object
+      properties:
+        event_type:
+          type: string
+          example: "alert"
+        timestamp:
+          type: string
+          example: "2019-06-12T15:44:32.440396+0000"
+        alert:
+          type: object
+          properties:
+            category:
+              type: string
+              example: "A Network Trojan was detected"
+            signature:
+              type: string
+              example: "MALWARE-CNC Win.Trojan.Revenge RAT inbound heartbeat check"
+            signature_id:
+              type: integer
+              format: int32
+              example: 45962
+        proto:
+          type: string
+          example: "TCP"
+        dest_ip:
+          type: string
+          example: "192.168.122.2"
+        dest_port:
+          type: integer
+          format: int32
+          example: 56248
+        src_ip:
+          type: string
+          example: "35.231.236.85"
+        src_port:
+          type: integer
+          format: int32
+          example: 333
+        http:
+          type: object
+          properties:
+            hostname:
+              type: string
+              example: "vbih.tk"
+            http_method:
+              type: string
+              example: "POST"
+            http_user_agent:
+              type: string
+              example: "Mozilla/4.08 (Charon; Inferno)"
+            length:
+              type: integer
+              format: int32
+              example: 0
+            protocol:
+              type: string
+              example: "HTTP/1.0"
+            url:
+              type: string
+              example: "/V1/five/fre.php"
+    recent_reports:
+      properties:
+        reports:
+          type: array
+          items:
+            $ref: "#/components/schemas/report_summary"
         page_size:
           type: integer
           format: int32
           example: 1
-    search_results:
+    report_summary:
       properties:
-        results:
+        meta:
+          $ref: "#/components/schemas/meta"
+        detect_rules_summary:
           type: array
           items:
-            $ref: "#/components/schemas/report"
+            $ref: "#/components/schemas/detect_rules_summary"
+    detect_rules_summary:
+      type: string
+      example: "nymaimr
+    
     jobs:
       properties:
         current_job:
-          $ref: "#/components/schemas/current_job"
+          $ref: "#/components/schemas/job"
         queued_jobs:
           type: array
           items:
-            $ref: "#/components/schemas/queued_jobs"     
-    current_job:
+            $ref: "#/components/schemas/job"     
+    job:
       properties:
         config:
             $ref: "#/components/schemas/job_conf"  
         id:
           type: string
           example: "de9e01a2-7603-4098-8503-e82742a4b2c1"
-    queued_jobs:
-      properties:
-        config:
-          $ref: "#/components/schemas/job_conf"
-        id:
-          type: string
-          example: "f5f5f39d-6421-4824-b724-e532704b1d83"
     job_conf:
       properties:
         target_file:

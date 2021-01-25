@@ -1,21 +1,26 @@
 module.exports = {
-  root: true,
-  env: {
-    browser: true,
-    node: true
-  },
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: '@typescript-eslint/parser'
   },
   extends: [
-    // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
-    // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
-    'plugin:vue/essential'
+    '@nuxtjs',
+    "eslint:recommended",
+    "plugin:vue/recommended",
+    'plugin:prettier/recommended',
+    'prettier/vue',
+    'prettier/@typescript-eslint'
   ],
-  // required to lint *.vue files
   plugins: [
-    'vue'
+    'prettier',
+    'vue',
+    "@typescript-eslint",
   ],
-  // add your custom rules here
-  rules: {}
+  rules: {
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "no-console": "off",
+    "vue/max-attributes-per-line": "off",
+    "prettier/prettier": ["error", { "semi": false }],
+    "camelcase": "off"
+  }
 }

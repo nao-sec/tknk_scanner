@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Message class="progress-message" v-if="is_processing">
-      <i class="fas fa-spinner fa-spin fa-10x"></i>
+    <Message v-if="is_processing" class="progress-message">
+      <font-awesome-icon icon="spinner" spin size="10x" />
       <p>Now analyzing ...</p>
     </Message>
     <div v-if="!is_processing">
@@ -33,72 +33,71 @@
   </div>
 </template>
 
-<script>
-  import Message from '~/components/ui/Message'
-  import ScanSummary from '~/components/results/summary/scan/Summary'
-  import FileSummary from '~/components/results/summary/file/Summary'
-  import Files from '~/components/results/files/Files'
-  import { mapState } from 'vuex'
+<script lang="ts">
+import Vue from "vue"
+import Message from "~/components/ui/Message.vue"
+import ScanSummary from "~/components/results/summary/scan/Summary.vue"
+import FileSummary from "~/components/results/summary/file/Summary.vue"
+import Files from "~/components/results/files/Files.vue"
+import { ReportResponse } from "~/types/tknk"
 
-  export default {
-    name: "result-index",
-    components: {
-      ScanSummary,
-      FileSummary,
-      Message,
-      Files,
+export default Vue.extend({
+  name: "ResultIndex",
+  components: {
+    ScanSummary,
+    FileSummary,
+    Message,
+    Files,
+  },
+  data() {
+    return {
+      interval: -1,
+      reportResponse: {} as ReportResponse,
+      statusCode: -1,
+    }
+  },
+  computed: {
+    isProcessing(): boolean {
+      return this.reportResponse.status_code === null || this.reportResponse.status_code === 1
     },
-    data() {
-      return {
-        interval: null
-      }
-    },
-    computed: {
-      is_processing () {
-        return this.report.status_code === 1 || this.report.status_code === null;
-      },
-      ...mapState([ 'report' ])
-    },
-    validate({ params }){
-      return /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(params.resultid);
-    },
-    created () {
-      this.fetch_data();
-      this.interval = setInterval(this.fetch_data, 5000);
-    },
-    methods: {
-      async fetch_data() {
-        if (this.report.status_code === null || this.report.status_code === 1) {
-          let res = await this.$axios.$get('/results/' + this.$route.params.resultid, { progress: false }).catch(e => {
-            clearInterval(this.interval);
-            throw this.$root.error(e);
-          });
-          if(res.status_code !== 1) {
-            this.$store.commit('report/set_result', res);
-          }
-        } else {
-          clearInterval(this.interval);
+  },
+  validate({ params }) {
+    return /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(params.resultid)
+  },
+  created() {
+    this.fetch_data()
+    this.interval = window.setInterval(this.fetch_data, 5000)
+  },
+  methods: {
+    async fetch_data() {
+      if (this.reportResponse.status_code === null || this.reportResponse.status_code === 1) {
+        const res: ReportResponse = await (this as any).$axios.$get("/result/" + this.$route.params.resultid, { progress: false }).catch(e => {
+          clearInterval(this.interval)
+          throw (this.$root as any).error(e)
+        })
+        if (res.status_code !== 1) {
+          this.reportResponse = res
+          this.statusCode = res.status_code
         }
+      } else {
+        clearInterval(this.interval)
       }
     },
-    beforeDestroy() {
-      clearInterval(this.interval);
-      this.$store.commit('report/destoroy');
-    },
-  }
+  },
+})
 </script>
 
 <style lang="stylus" scoped>
-  .progress-message
-    text-align center
-    i
-      color #00ff00
-  .row
-    margin-top 1em
+.progress-message
+  text-align center
+  i
+    color #00ff00
+.row
+  margin-top 1em
 </style>
 
 <style lang="stylus">
-  .table
-    td
-      border-top none
+.table
+  td
+    border-top none
 </style>

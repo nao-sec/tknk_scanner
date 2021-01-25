@@ -1,16 +1,24 @@
 #!/usr/bin/env python3
 from rq import Queue
-import json, subprocess, requests, time, shutil, magic, os, uuid, math, redis, datetime, re, sys
+import json
+import subprocess
+import requests
+import time
+import shutil
+import magic
+import os
+import uuid
+import math
+import redis
+import datetime
+import re
+import sys
 from pathlib import Path
 from pymongo import MongoClient
 from flask import Flask, jsonify, request, url_for, abort, Response, make_response, send_file, abort
 from redis import Redis
 from xmlrpc_client import analyze
 
-with open("tknk.conf", 'r') as f:
-    tknk_conf = json.load(f)
-
-VM_NAME=tknk_conf['vm_name']
 UPLOAD_FOLDER="target/" 
 
 app = Flask(__name__)
@@ -18,27 +26,28 @@ app = Flask(__name__)
 @app.route('/analyze', methods=['POST'])
 def start_analyze():
     if 'application/json' not in request.headers['Content-Type']:
-        print(request.headers['Content-Type'])
         return jsonify(status_code=2, message="Content-Type Error.")
 
-    json_data = request.json
-    p = Path(json_data['path'])
-    json_data['target_file']=p.name
-    json_data['timestamp'] = int(time.mktime(datetime.datetime.now().timetuple()))
+    requet_data = request.json
+    p = Path(requet_data['path'])
+    requet_data['target_file']=p.name
 
     path = "target/"
-    if os.path.exists(path+json_data['target_file']) != True:
+    if os.path.exists(path+requet_data['target_file']) != True:
         return abort(404)
 
     uid = str(uuid.uuid4())
-    post = {"UUID":uid, "avclass":{"data":[],"flag":None},"die":[],"magic":None,"mode":None,"result":{"detail":None,"is_success":None},"run_time":None,"scans":[], "target_scan":{"file_name":None, "detect_rule":[], "md5":None,"sha1":None,"sha256":None, "size":None}, "timestamp":None, "virus_total":None}
+    post = {
+        "meta": {
+            "UUID":uid
+        }
+    }
 
     collection.insert_one(post)
 
-    print(json.dumps(json_data, indent=4))
-    r.set(uid, str(json_data))
+    r.set(uid, str(requet_data))
 
-    job = q.enqueue(analyze, uid, job_id=uid, timeout=json_data['time']+500)
+    job = q.enqueue(analyze, uid,  job_id=uid, timeout=requet_data['time']+500)
 
     return jsonify(status_code=0, UUID=uid, message="Submission Success!")
 
@@ -52,7 +61,6 @@ def file_upload():
     file_type = magic.from_file("target/"+filename)
 
     if ("PE32" or"PE32+") not in file_type:
-            print("Invalid File Format!! Only PE Format File(none dll).")
             return make_response(jsonify(status_code=2, message= str(file_type)+ " Invalid File Format!! Only PE Format File."  ), 400)
 
     if (("PE32" or "PE32+") in file_type):
@@ -63,16 +71,15 @@ def file_upload():
 
     return jsonify(status_code=0, path=UPLOAD_FOLDER+filename)
 
-@app.route('/results/<uuid>')
+@app.route('/result/<uuid>')
 def show_result(uuid=None):
 
-    report = collection.find_one({u"UUID":uuid})
+    report = collection.find_one({u"meta.UUID":uuid})
     if report == None:
         return abort(404)
-
     report.pop('_id')
-    
-    if  report['result']['is_success'] is not None:
+
+    if 1 < len(report['meta']):
         return jsonify(status_code=0, report=report)
     else:
         return make_response(jsonify(status_code=1, message='Analysing...'), 206)
@@ -89,7 +96,6 @@ def get_yara_file(rule_name=None):
 
     db = json.loads(r.get("yara_db").decode('utf-8').replace("\'", "\""))    
 
-    print(db[rule_name])
     try:
         with open(db[rule_name], 'r') as f:
             yara_file=f.read()
@@ -100,15 +106,22 @@ def get_yara_file(rule_name=None):
 
 @app.route('/page/<page_num>')
 def page(page_num=None):
-    page=[]
+    reports=[]
     page_num = int(page_num)
-    line_num = 50.0
+    line_num = 30.0
     page_size= math.ceil(len(list(collection.find()))/line_num)
     page_item = collection.find().sort('timestamp',-1).limit(int(line_num)).skip((page_num-1)*int(line_num))
     for p in page_item:
-        p.pop('_id')
-        page.append(p)
-    return jsonify(status_code=0, page=page, page_size=page_size)
+        detect_rules = p['result']['uploaded_file_scan']['detect_rules']
+        for dumped_file in p['result']['dumped_file_scan']:
+            detect_rules.extend(dumped_file['detect_rules'])
+        detect_rules = list(set(detect_rules))
+        new_page_item = {
+            "meta":p['meta'],
+            "detect_rules_summary":detect_rules
+        }
+        reports.append(new_page_item)
+    return jsonify(status_code=0, reports=page, page_size=page_size)
 
 @app.route('/jobs')
 def job_ids():
@@ -146,19 +159,24 @@ def download(uuid=None):
 
 @app.route('/search/<search_type>/<value>')    
 def search(search_type=None, value=None):
-
     if search_type != "md5" and search_type != "sha1" and search_type != "sha256":
         return abort(404)
-
     search_results=[]
 
-    result = collection.find({"target_scan."+search_type:value})
+    report = collection.find({"result.uploaded_file_scan."+search_type:value})
 
-    results = list(result)
+    results = list(report)
 
     for r in results:
-        r.pop('_id')
-        search_results.append(r)
+        detect_rules = r['result']['uploaded_file_scan']['detect_rules']
+        for dumped_file in r['result']['dumped_file_scan']:
+            detect_rules.extend(dumped_file['detect_rules'])
+        detect_rules = list(set(detect_rules))
+        new_page_item = {
+            "meta":r['meta'],
+            "detect_rules_summary":detect_rules
+        }
+        search_results.append(new_page_item)
 
     if len(search_results) == 0:
         abort(404)
@@ -203,7 +221,6 @@ if __name__ == '__main__':
                 pass
     
     r.set('yara_db', str(yara_db))
-    print()
 
     # Tell RQ what Redis connection to use
     redis_conn = Redis(host='localhost', port=6379)
